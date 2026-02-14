@@ -13,6 +13,11 @@ Create GitHub pull requests with smart title and description from branch commits
 
 **Requirements:** git, GitHub CLI (`gh`)
 
+### session-note
+Capture current work session into a markdown note for continuity.
+
+**Requirements:** none
+
 ## Requirements
 
 - rsync (for sync script)
@@ -36,3 +41,7 @@ The script will:
 - Update existing skills if the repository version is different
 - Skip skills that are already up-to-date
 - Preserve file permissions and timestamps
+
+## Creating Skills
+
+For documentation on creating your own skills, see: https://opencode.ai/docs/skills/
