@@ -50,6 +50,7 @@ The script will:
 - Skip items that are already up-to-date
 - Preserve file permissions and timestamps
 
-## Creating Skills
+## OpenCode Documentation
 
-For documentation on creating your own skills, see: https://opencode.ai/docs/skills/
+- **Creating Skills**: https://opencode.ai/docs/skills/
+- **Creating Agents**: https://opencode.ai/docs/agents/
