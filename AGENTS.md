@@ -115,6 +115,10 @@ The sync script installs skills and agents from this repo to `~/.config/opencode
 
 The `git-commit` skill checks for `AGENTS.md` files in target projects for CI skip rules. Changes limited to docs, config, or non-production scripts may get `[skip ci]` appended to commit messages.
 
+## Keeping AGENTS.md Up-to-Date
+
+When you make significant structural changes to this project (e.g., adding/removing skills or agents, changing conventions, modifying `sync.sh` behavior, or altering the repo layout), update this file to reflect those changes. Future agents rely on AGENTS.md for accurate project context.
+
 ## Documentation
 
 - Skills: https://opencode.ai/docs/skills/
