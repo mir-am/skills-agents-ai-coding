@@ -1,5 +1,5 @@
 # opencode-skills
-Skills for OpenCode
+Skills and agents for OpenCode
 
 ## Available Skills
 
@@ -18,28 +18,36 @@ Capture current work session into a markdown note for continuity.
 
 **Requirements:** none
 
+## Available Agents
+
+### code-review
+Reviews feature branch diffs for quality, bugs, performance, and security. Writes a structured review to `.opencode/review/`.
+
+**Requirements:** git
+
 ## Requirements
 
 - rsync (for sync script)
 
 ## Usage
 
-Sync all skills from this repository to your OpenCode configuration:
+Sync all skills and agents from this repository to your OpenCode configuration:
 
 ```bash
-./sync-skills.sh
+./sync.sh
 ```
 
 Preview changes without applying them (dry-run):
 
 ```bash
-./sync-skills.sh --dry-run
+./sync.sh --dry-run
 ```
 
 The script will:
 - Install new skills that don't exist in `~/.config/opencode/skills/`
-- Update existing skills if the repository version is different
-- Skip skills that are already up-to-date
+- Install new agents that don't exist in `~/.config/opencode/agents/`
+- Update existing skills/agents if the repository version is different
+- Skip items that are already up-to-date
 - Preserve file permissions and timestamps
 
 ## Creating Skills
