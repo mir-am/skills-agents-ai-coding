@@ -71,6 +71,9 @@ When reviewing diffs, you may encounter code that references functions, types, c
 
 This ensures your review is informed by the full context, not just the diff in isolation.
 
+> **Tip: Load source files on-demand and conservatively.**
+> Only read a source file when you have a specific, concrete reason — for example, to understand a called function whose signature is unclear from the diff, to resolve a type definition, or to verify how a shared constant is used. Do **not** read all changed files or their imports upfront. Repositories can be large, and loading many files at the start will quickly saturate your context window and degrade the quality of your review. Prefer `grep` to pinpoint a single definition before reaching for a full `read`. Fetch the minimum context needed, exactly when you need it.
+
 # Permissions
 
 ## Allowed
