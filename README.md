@@ -13,6 +13,11 @@ Create GitHub pull requests with smart title and description from branch commits
 
 **Requirements:** git, GitHub CLI (`gh`)
 
+### git-push
+Push commits to feature branch and update open PR description with new changes.
+
+**Requirements:** git, GitHub CLI (`gh`)
+
 ### session-note
 Capture current work session into a markdown note for continuity.
 
@@ -50,6 +55,7 @@ The script will:
 - Skip items that are already up-to-date
 - Preserve file permissions and timestamps
 
-## Creating Skills
+## OpenCode Documentation
 
-For documentation on creating your own skills, see: https://opencode.ai/docs/skills/
+- **Creating Skills**: https://opencode.ai/docs/skills/
+- **Creating Agents**: https://opencode.ai/docs/agents/
