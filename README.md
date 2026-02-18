@@ -13,6 +13,11 @@ Create GitHub pull requests with smart title and description from branch commits
 
 **Requirements:** git, GitHub CLI (`gh`)
 
+### git-push
+Push commits to feature branch and update open PR description with new changes.
+
+**Requirements:** git, GitHub CLI (`gh`)
+
 ### session-note
 Capture current work session into a markdown note for continuity.
 

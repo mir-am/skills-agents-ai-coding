@@ -13,6 +13,8 @@ opencode-skills/
       SKILL.md
     git-pr/
       SKILL.md
+    git-push/
+      SKILL.md
     session-note/
       SKILL.md
   agents/              # Agents: flat .md files, one per agent
