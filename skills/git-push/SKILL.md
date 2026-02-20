@@ -13,7 +13,8 @@ metadata:
 
 - Push new local commits on a feature branch to the remote
 - Detect if an open PR exists for the current branch
-- Update the PR's "Changes" section to reflect the newly pushed commits
+- Update the PR's "Changes" section only when the push adds significant new functionality
+- Skip PR updates for commits that fix bugs or mistakes from earlier commits in the same branch
 - Preserve the existing PR Summary while appending new change entries
 
 ## When to use me
@@ -49,6 +50,7 @@ Use this skill when the user asks to push commits and/or update the PR with the 
 ## PR Update Workflow
 
 After pushing, check if an open PR exists for this branch and update its description.
+Only update the PR description when the push adds something new. Do not update it for fixes to earlier work in the same branch.
 
 ### Detect Open PR
 
@@ -57,7 +59,7 @@ gh pr view --json number,body --jq '{number: .number, body: .body}' 2>/dev/null
 ```
 
 - If no open PR exists → skip PR update, just report the push
-- If PR found → proceed with updating the description
+- If PR found → proceed to analyzing the new commits
 
 ### Analyze New Commits
 
@@ -71,7 +73,29 @@ gh pr view --json number,body --jq '{number: .number, body: .body}' 2>/dev/null
    git diff <pre-push-sha>..HEAD --stat
    ```
 
+### Decide Whether to Update the PR
+
+Look at the new commits and decide: **do they add something new to the branch, or do they fix/correct earlier work in the same branch?**
+
+**Update the PR Changes section** when the new commits:
+- Add a new feature, capability, or behavior
+- Add new files, components, or modules
+- Introduce a new integration or API
+- Make a meaningful enhancement that changes what the PR delivers
+
+**Skip the PR Changes update** when the new commits:
+- Fix a bug introduced by an earlier commit in this same branch
+- Fix typos, linting errors, or test failures from earlier branch work
+- Refactor or clean up code that was added in this branch
+- Address code review feedback on existing branch changes
+
+The simple rule: if the commit makes the PR do something it didn't do before, update Changes. If it fixes or polishes what the PR already does, skip the update.
+
+When skipping, just report the push: "Pushed to `<branch>`. PR not updated (commit fixes/polishes existing branch work)."
+
 ### Update PR Description
+
+Only reach this step if the new commits are significant (see above).
 
 1. Fetch the current PR body:
    ```bash
