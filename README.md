@@ -18,6 +18,11 @@ Push commits to feature branch and update open PR description with new changes.
 
 **Requirements:** git, GitHub CLI (`gh`)
 
+### gh-issue
+Create a GitHub issue for a bug or feature idea found during an agent session.
+
+**Requirements:** git, GitHub CLI (`gh`)
+
 ### save-plan
 Save or update the agent's current plan to `.opencode/plans/` in the working project.
 
