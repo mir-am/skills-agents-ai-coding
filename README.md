@@ -18,6 +18,11 @@ Push commits to feature branch and update open PR description with new changes.
 
 **Requirements:** git, GitHub CLI (`gh`)
 
+### save-plan
+Save or update the agent's current plan to `.opencode/plans/` in the working project.
+
+**Requirements:** none
+
 ### session-note
 Capture current work session into a markdown note for continuity.
 
