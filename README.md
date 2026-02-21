@@ -23,6 +23,11 @@ Create a GitHub issue for a bug or feature idea found during an agent session.
 
 **Requirements:** git, GitHub CLI (`gh`)
 
+### gh-issue-fix
+Pick up a GitHub issue and implement a fix or feature with a user-approved plan. Fetches issue details, explores codebase, generates implementation plan, creates feature branch, and implements changes.
+
+**Requirements:** git, GitHub CLI (`gh`)
+
 ### save-plan
 Save or update the agent's current plan to `.opencode/plans/` in the working project.
 
