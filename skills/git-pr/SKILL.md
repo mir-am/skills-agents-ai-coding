@@ -15,6 +15,7 @@ metadata:
 - Push branch to remote if needed
 - Generate PR title summarizing all commits + session work (no type prefix)
 - Create concise PR description with summary and 3-5 key changes
+- Link GitHub issue if working on one in current session
 - Create GitHub PR using `gh` CLI
 
 ## When to use me
@@ -78,6 +79,16 @@ Use this skill when the user asks to create a pull request from the current feat
 - Fallback: `main` (if master doesn't exist)
 - Check: `git rev-parse --verify master 2>/dev/null && echo "master" || echo "main"`
 
+## Issue Linking
+
+If the agent is working on a GitHub issue in the current session:
+1. Check session context for issue number (e.g., working on issue #123)
+2. Add issue reference to PR body footer:
+   ```markdown
+   ---
+   Closes #<issue-number>
+   ```
+
 ## Create PR
 
 Execute the pull request creation:
@@ -85,7 +96,8 @@ Execute the pull request creation:
 gh pr create --base <master-or-main> --title "<title>" --body "<description>"
 ```
 
-Return the PR URL to the user.
+- If working on an issue, append `Closes #<issue-number>` to the description
+- Return the PR URL to the user
 
 ## Error Handling
 
