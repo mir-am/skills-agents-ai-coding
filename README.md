@@ -33,6 +33,16 @@ Review a GitHub Pull Request using gh CLI and provide structured feedback. Fetch
 
 **Requirements:** git, GitHub CLI (`gh`)
 
+### gh-cr-submit
+Submit AI-generated code review from `.opencode/review/` to GitHub PR. Validates branch matching, handles forks, allows user to choose from multiple reviews, and adds AI-generated warning header before submission.
+
+**Requirements:** git, GitHub CLI (`gh`)
+
+### make-changelog
+Create initial CHANGELOG.md with unreleased features using Keep a Changelog format. Extracts up to 10 major features from README.md, commit history, and codebase structure.
+
+**Requirements:** git
+
 ### save-plan
 Save or update the agent's current plan to `.opencode/plans/` in the working project.
 

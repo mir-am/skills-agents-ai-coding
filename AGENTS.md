@@ -9,14 +9,16 @@ This is **opencode-skills**, a collection of reusable skills and agents for [Ope
 ```
 opencode-skills/
   skills/              # Skills: one directory per skill, each containing a SKILL.md
+    gh-cr-submit/
+    gh-issue/
+    gh-issue-fix/
+    gh-pr-review/
     git-commit/
-      SKILL.md
     git-pr/
-      SKILL.md
     git-push/
-      SKILL.md
+    make-changelog/
+    save-plan/
     session-note/
-      SKILL.md
   agents/              # Agents: flat .md files, one per agent
     code-review.md
   sync.sh              # Installs/updates skills and agents to ~/.config/opencode/
