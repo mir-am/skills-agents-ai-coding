@@ -9,6 +9,8 @@ This repository stores skills in the open Agent Skills format and supports synci
 
 It also includes OpenCode-specific agents in `agents/`.
 
+Skill source files in this repository keep OpenCode-style workspace paths like `.opencode/...`. During `ghc` sync, `sync.sh` rewrites those skill instructions to `.copilot/...` before installing them.
+
 ## Available Skills
 
 ### git-commit
@@ -120,6 +122,7 @@ The script will:
 - Install new skills that don't exist in the selected target skills directory
 - Install new OpenCode agents that don't exist in `~/.config/opencode/agents/`
 - Update existing skills/agents if the repository version is different
+- Rewrite skill workspace paths from `.opencode/...` to `.copilot/...` when syncing to `ghc`
 - Skip items that are already up-to-date
 - Preserve file permissions and timestamps
 
@@ -127,9 +130,11 @@ The script will:
 
 - OpenCode (`oc`)
   - Skills: `~/.config/opencode/skills`
+  - Skill workspace paths stay as `.opencode/...`
   - Agents: `~/.config/opencode/agents`
 - GitHub Copilot CLI (`ghc`)
   - Skills: `~/.copilot/skills`
+  - Skill workspace paths are rewritten to `.copilot/...` during sync
   - Agents: not synced by this script
 
 ## Documentation

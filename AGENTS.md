@@ -98,6 +98,7 @@ The sync script installs skills and agents from this repo to supported target CL
 - Accepts `oc` and `ghc` as target arguments, plus `--sync-all` to sync all supported targets
 - Syncs skills (directories) to `~/.config/opencode/skills/` for `oc` using `rsync`
 - Syncs skills (directories) to `~/.copilot/skills/` for `ghc` using `rsync`
+- Rewrites skill-instruction workspace paths from `.opencode/` to `.copilot/` during `ghc` sync
 - Syncs agents (flat `.md` files) to `~/.config/opencode/agents/` for `oc` using `cp`
 - Creates target skills directories if they do not exist
 - Compares hashes (md5sum) to detect changes

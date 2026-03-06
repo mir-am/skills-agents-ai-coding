@@ -10,6 +10,8 @@ DEFAULT_TARGET="oc"
 TARGET_PROGRAM="$DEFAULT_TARGET"
 SYNC_ALL=false
 DRY_RUN=false
+TEMP_ROOT=""
+PREPARED_SKILL_SOURCE=""
 
 # Color detection - only use colors if stdout is a terminal
 if [ -t 1 ]; then
@@ -97,6 +99,50 @@ get_agents_target_dir() {
   esac
 }
 
+ensure_temp_root() {
+  if [ -z "$TEMP_ROOT" ]; then
+    TEMP_ROOT=$(mktemp -d)
+    trap 'if [ -n "$TEMP_ROOT" ] && [ -d "$TEMP_ROOT" ]; then rm -rf "$TEMP_ROOT"; fi' EXIT
+  fi
+}
+
+prepare_skill_source_dir() {
+  local skill_name="$1"
+  local target="$2"
+  local source_path="$SKILLS_SOURCE_DIR/$skill_name"
+
+  if [ "$target" = "oc" ]; then
+    PREPARED_SKILL_SOURCE="$source_path"
+    return 0
+  fi
+
+  ensure_temp_root
+
+  local prepared_path="$TEMP_ROOT/$target/$skill_name"
+  rm -rf "$prepared_path"
+  mkdir -p "$prepared_path"
+  rsync -a "$source_path/" "$prepared_path/"
+
+  python3 - "$prepared_path" <<'PY'
+import os
+import sys
+
+root = sys.argv[1]
+
+for dirpath, _, filenames in os.walk(root):
+    for filename in filenames:
+        path = os.path.join(dirpath, filename)
+        with open(path, "r", encoding="utf-8") as fh:
+            content = fh.read()
+        rewritten = content.replace(".opencode/", ".copilot/")
+        if rewritten != content:
+            with open(path, "w", encoding="utf-8") as fh:
+                fh.write(rewritten)
+PY
+
+  PREPARED_SKILL_SOURCE="$prepared_path"
+}
+
 # Helper function: Calculate directory hash
 calculate_dir_hash() {
   local dir="$1"
@@ -108,8 +154,11 @@ calculate_dir_hash() {
 sync_skill() {
   local skill_name="$1"
   local skills_target_dir="$2"
-  local source_path="$SKILLS_SOURCE_DIR/$skill_name"
+  local target="$3"
+  local source_path
   local target_path="$skills_target_dir/$skill_name"
+  prepare_skill_source_dir "$skill_name" "$target"
+  source_path="$PREPARED_SKILL_SOURCE"
   
   # Calculate source hash
   local source_hash=$(calculate_dir_hash "$source_path")
@@ -216,7 +265,7 @@ sync_target() {
     skill_name=$(basename "$skill_dir")
 
     set +e
-    sync_skill "$skill_name" "$skills_target_dir"
+    sync_skill "$skill_name" "$skills_target_dir" "$target"
     result=$?
     set -e
 
