@@ -28,6 +28,11 @@ Pick up a GitHub issue and implement a fix or feature with a user-approved plan.
 
 **Requirements:** git, GitHub CLI (`gh`)
 
+### gh-copilot-review-read
+Read GitHub Copilot PR review comments, pair them with diff context, and write a markdown digest to `.opencode/review/`.
+
+**Requirements:** GitHub CLI (`gh`)
+
 ### save-plan
 Save or update the agent's current plan to `.opencode/plans/` in the working project.
 

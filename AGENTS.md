@@ -9,6 +9,8 @@ This is **opencode-skills**, a collection of reusable skills and agents for [Ope
 ```
 opencode-skills/
   skills/              # Skills: one directory per skill, each containing a SKILL.md
+    gh-copilot-review-read/
+      SKILL.md
     git-commit/
       SKILL.md
     git-pr/
@@ -97,6 +99,7 @@ The sync script installs skills and agents from this repo to `~/.config/opencode
 - Supports `--dry-run` for previewing changes
 - Reports installed/updated/up-to-date counts for both skills and agents
 - Requires `rsync` to be installed
+- Syncs newly added skills such as `gh-copilot-review-read/` into `~/.config/opencode/skills/`
 
 ## Adding a New Skill
 
