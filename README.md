@@ -1,4 +1,5 @@
-# opencode-skills
+# Mir's Agents & Skills for AI Coding Assistants
+
 Reusable Agent Skills and agents for CLI coding assistants.
 
 This repository stores skills in the open Agent Skills format and supports syncing them to multiple CLIs:
@@ -16,12 +17,12 @@ Smart git commit with branch protection, session-aware staging, and conventional
 **Requirements:** git
 
 ### git-pr
-Create GitHub pull requests with smart title and description from branch commits.
+Create GitHub pull requests with a smart title and description from branch commits.
 
 **Requirements:** git, GitHub CLI (`gh`)
 
 ### git-push
-Push commits to feature branch and update open PR description with new changes.
+Push commits to the feature branch and update the open PR description with new changes.
 
 **Requirements:** git, GitHub CLI (`gh`)
 
@@ -41,12 +42,12 @@ Review a GitHub Pull Request using gh CLI and provide structured feedback. Fetch
 **Requirements:** git, GitHub CLI (`gh`)
 
 ### gh-cr-submit
-Submit AI-generated code review from `.opencode/review/` to GitHub PR. Validates branch matching, handles forks, allows user to choose from multiple reviews, and adds AI-generated warning header before submission.
+Submit AI-generated code review from `.opencode/review/` to GitHub PR. Validates branch matching, handles forks, allows the user to choose from multiple reviews, and adds an AI-generated warning header before submission.
 
 **Requirements:** git, GitHub CLI (`gh`)
 
 ### make-changelog
-Create initial CHANGELOG.md with unreleased features using Keep a Changelog format. Extracts up to 10 major features from README.md, commit history, and codebase structure.
+Create an initial CHANGELOG.md with unreleased features using Keep a Changelog format. Extracts up to 10 major features from README.md, commit history, and codebase structure.
 
 **Requirements:** git
 
@@ -56,7 +57,7 @@ Save or update the agent's current plan to `.opencode/plans/` in the working pro
 **Requirements:** none
 
 ### session-note
-Capture current work session into a markdown note for continuity.
+Capture the current work session into a markdown note for continuity.
 
 **Requirements:** none
 
