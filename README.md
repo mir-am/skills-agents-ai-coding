@@ -85,7 +85,8 @@ The script will:
 - Skip items that are already up-to-date
 - Preserve file permissions and timestamps
 
-## OpenCode Documentation
+## Documentation
 
-- **Creating Skills**: https://opencode.ai/docs/skills/
-- **Creating Agents**: https://opencode.ai/docs/agents/
+- **Creating OpenCode Skills**: https://opencode.ai/docs/skills/
+- **Creating OpenCode Agents**: https://opencode.ai/docs/agents/
+- **Agent Skills Specification**: https://agentskills.io/ - An open format for creating reusable agent skills.
