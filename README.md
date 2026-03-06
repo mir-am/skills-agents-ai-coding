@@ -1,5 +1,12 @@
 # opencode-skills
-Skills and agents for OpenCode
+Reusable Agent Skills and agents for CLI coding assistants.
+
+This repository stores skills in the open Agent Skills format and supports syncing them to multiple CLIs:
+
+- OpenCode (`oc`)
+- GitHub Copilot CLI (`ghc`)
+
+It also includes OpenCode-specific agents in `agents/`.
 
 ## Available Skills
 
@@ -66,10 +73,28 @@ Reviews feature branch diffs for quality, bugs, performance, and security. Write
 
 ## Usage
 
-Sync all skills and agents from this repository to your OpenCode configuration:
+Sync skills to OpenCode by default, plus OpenCode agents:
 
 ```bash
 ./sync.sh
+```
+
+Sync explicitly to OpenCode:
+
+```bash
+./sync.sh oc
+```
+
+Sync skills to GitHub Copilot CLI:
+
+```bash
+./sync.sh ghc
+```
+
+Sync all supported targets:
+
+```bash
+./sync.sh --sync-all
 ```
 
 Preview changes without applying them (dry-run):
@@ -78,12 +103,33 @@ Preview changes without applying them (dry-run):
 ./sync.sh --dry-run
 ```
 
+Preview a GitHub Copilot CLI sync without applying changes:
+
+```bash
+./sync.sh ghc --dry-run
+```
+
+Preview all supported targets without applying changes:
+
+```bash
+./sync.sh --sync-all --dry-run
+```
+
 The script will:
-- Install new skills that don't exist in `~/.config/opencode/skills/`
-- Install new agents that don't exist in `~/.config/opencode/agents/`
+- Install new skills that don't exist in the selected target skills directory
+- Install new OpenCode agents that don't exist in `~/.config/opencode/agents/`
 - Update existing skills/agents if the repository version is different
 - Skip items that are already up-to-date
 - Preserve file permissions and timestamps
+
+## Sync Targets
+
+- OpenCode (`oc`)
+  - Skills: `~/.config/opencode/skills`
+  - Agents: `~/.config/opencode/agents`
+- GitHub Copilot CLI (`ghc`)
+  - Skills: `~/.copilot/skills`
+  - Agents: not synced by this script
 
 ## Documentation
 
