@@ -29,9 +29,23 @@ Pick up a GitHub issue and implement a fix or feature with a user-approved plan.
 **Requirements:** git, GitHub CLI (`gh`)
 
 ### gh-copilot-review-read
-Read GitHub Copilot PR review comments, pair them with diff context, and write a markdown digest to `.opencode/review/`.
+Read GitHub Copilot PR review comments, pair them with suggestions (if any), and write a markdown digest to `.opencode/review/`.
 
 **Requirements:** GitHub CLI (`gh`)
+### gh-pr-review
+Review a GitHub Pull Request using gh CLI and provide structured feedback. Fetches PR metadata, diffs, and changed files, then generates a comprehensive code review focusing on quality, bugs, performance, and security.
+
+**Requirements:** git, GitHub CLI (`gh`)
+
+### gh-cr-submit
+Submit AI-generated code review from `.opencode/review/` to GitHub PR. Validates branch matching, handles forks, allows user to choose from multiple reviews, and adds AI-generated warning header before submission.
+
+**Requirements:** git, GitHub CLI (`gh`)
+
+### make-changelog
+Create initial CHANGELOG.md with unreleased features using Keep a Changelog format. Extracts up to 10 major features from README.md, commit history, and codebase structure.
+
+**Requirements:** git
 
 ### save-plan
 Save or update the agent's current plan to `.opencode/plans/` in the working project.
