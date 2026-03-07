@@ -128,12 +128,21 @@ import os
 import sys
 
 root = sys.argv[1]
+text_extensions = {".md", ".yaml", ".yml"}
 
 for dirpath, _, filenames in os.walk(root):
     for filename in filenames:
+        _, extension = os.path.splitext(filename)
+        if extension.lower() not in text_extensions:
+            continue
+
         path = os.path.join(dirpath, filename)
-        with open(path, "r", encoding="utf-8") as fh:
-            content = fh.read()
+        try:
+            with open(path, "r", encoding="utf-8") as fh:
+                content = fh.read()
+        except UnicodeDecodeError:
+            continue
+
         rewritten = content.replace(".opencode/", ".copilot/")
         if rewritten != content:
             with open(path, "w", encoding="utf-8") as fh:
