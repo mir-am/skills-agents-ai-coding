@@ -137,6 +137,46 @@ import sys
 root = sys.argv[1]
 text_extensions = {".md", ".yaml", ".yml"}
 
+
+def strip_ghc_frontmatter(text):
+    lines = text.splitlines(keepends=True)
+    if len(lines) < 3 or lines[0].strip() != "---":
+        return text
+
+    end_index = None
+    for i in range(1, len(lines)):
+        if lines[i].strip() == "---":
+            end_index = i
+            break
+
+    if end_index is None:
+        return text
+
+    frontmatter = lines[1:end_index]
+    body = lines[end_index:]
+    rewritten = []
+    skip_metadata = False
+
+    for line in frontmatter:
+        stripped = line.lstrip()
+        indent = len(line) - len(stripped)
+
+        if skip_metadata:
+            if stripped and indent > 0:
+                continue
+            skip_metadata = False
+
+        if stripped.startswith("license:") or stripped.startswith("compatibility:"):
+            continue
+
+        if stripped.startswith("metadata:"):
+            skip_metadata = True
+            continue
+
+        rewritten.append(line)
+
+    return "".join([lines[0], *rewritten, *body])
+
 for dirpath, _, filenames in os.walk(root):
     for filename in filenames:
         _, extension = os.path.splitext(filename)
@@ -146,12 +186,16 @@ for dirpath, _, filenames in os.walk(root):
         path = os.path.join(dirpath, filename)
         try:
             with open(path, "r", encoding="utf-8") as fh:
-                content = fh.read()
+                original_content = fh.read()
         except UnicodeDecodeError:
             continue
 
+        content = original_content
+        if filename == "SKILL.md":
+            content = strip_ghc_frontmatter(content)
+
         rewritten = content.replace(".opencode/", ".copilot/")
-        if rewritten != content:
+        if rewritten != original_content:
             with open(path, "w", encoding="utf-8") as fh:
                 fh.write(rewritten)
 PY
