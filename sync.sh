@@ -5,10 +5,14 @@ set -e
 
 # Configuration
 SKILLS_SOURCE_DIR="./skills"
-SKILLS_TARGET_DIR="$HOME/.config/opencode/skills"
 AGENTS_SOURCE_DIR="./agents"
-AGENTS_TARGET_DIR="$HOME/.config/opencode/agents"
+DEFAULT_TARGET="oc"
+TARGET_PROGRAM="$DEFAULT_TARGET"
+TARGET_SPECIFIED=false
+SYNC_ALL=false
 DRY_RUN=false
+TEMP_ROOT=""
+PREPARED_SKILL_SOURCE=""
 
 # Color detection - only use colors if stdout is a terminal
 if [ -t 1 ]; then
@@ -28,20 +32,176 @@ else
   RESET=''
 fi
 
+# Helper function: usage
+usage() {
+  echo "Usage: $0 [oc|ghc] [--dry-run] [--sync-all]"
+}
+
 # Parse arguments
 while [[ $# -gt 0 ]]; do
   case $1 in
+    oc|ghc)
+      if [ "$SYNC_ALL" = true ]; then
+        echo "Cannot combine target '$1' with --sync-all"
+        usage
+        exit 1
+      fi
+      if [ "$TARGET_SPECIFIED" = true ]; then
+        echo "Cannot specify multiple targets: '$TARGET_PROGRAM' and '$1'"
+        usage
+        exit 1
+      fi
+      TARGET_PROGRAM="$1"
+      TARGET_SPECIFIED=true
+      shift
+      ;;
+    --sync-all)
+      if [ "$TARGET_PROGRAM" != "$DEFAULT_TARGET" ]; then
+        echo "Cannot combine explicit target '$TARGET_PROGRAM' with --sync-all"
+        usage
+        exit 1
+      fi
+      SYNC_ALL=true
+      shift
+      ;;
     --dry-run)
       DRY_RUN=true
       shift
       ;;
     *)
       echo "Unknown option: $1"
-      echo "Usage: $0 [--dry-run]"
+      usage
       exit 1
       ;;
   esac
 done
+
+get_skills_target_dir() {
+  local target="$1"
+
+  case "$target" in
+    oc)
+      echo "$HOME/.config/opencode/skills"
+      ;;
+    ghc)
+      echo "$HOME/.copilot/skills"
+      ;;
+    *)
+      echo "Unsupported target: $target" >&2
+      exit 1
+      ;;
+  esac
+}
+
+get_agents_target_dir() {
+  local target="$1"
+
+  case "$target" in
+    oc)
+      echo "$HOME/.config/opencode/agents"
+      ;;
+    *)
+      echo ""
+      ;;
+  esac
+}
+
+ensure_temp_root() {
+  if [ -z "$TEMP_ROOT" ]; then
+    TEMP_ROOT=$(mktemp -d)
+    trap 'if [ -n "$TEMP_ROOT" ] && [ -d "$TEMP_ROOT" ]; then rm -rf "$TEMP_ROOT"; fi' EXIT
+  fi
+}
+
+prepare_skill_source_dir() {
+  local skill_name="$1"
+  local target="$2"
+  local source_path="$SKILLS_SOURCE_DIR/$skill_name"
+
+  if [ "$target" = "oc" ]; then
+    PREPARED_SKILL_SOURCE="$source_path"
+    return 0
+  fi
+
+  ensure_temp_root
+
+  local prepared_path="$TEMP_ROOT/$target/$skill_name"
+  rm -rf "$prepared_path"
+  mkdir -p "$prepared_path"
+  rsync -a "$source_path/" "$prepared_path/"
+
+  python3 - "$prepared_path" <<'PY'
+import os
+import sys
+
+root = sys.argv[1]
+text_extensions = {".md", ".yaml", ".yml"}
+
+
+def strip_ghc_frontmatter(text):
+    lines = text.splitlines(keepends=True)
+    if len(lines) < 3 or lines[0].strip() != "---":
+        return text
+
+    end_index = None
+    for i in range(1, len(lines)):
+        if lines[i].strip() == "---":
+            end_index = i
+            break
+
+    if end_index is None:
+        return text
+
+    frontmatter = lines[1:end_index]
+    body = lines[end_index:]
+    rewritten = []
+    skip_metadata = False
+
+    for line in frontmatter:
+        stripped = line.lstrip()
+        indent = len(line) - len(stripped)
+
+        if skip_metadata:
+            if stripped and indent > 0:
+                continue
+            skip_metadata = False
+
+        if stripped.startswith("license:") or stripped.startswith("compatibility:"):
+            continue
+
+        if stripped.startswith("metadata:"):
+            skip_metadata = True
+            continue
+
+        rewritten.append(line)
+
+    return "".join([lines[0], *rewritten, *body])
+
+for dirpath, _, filenames in os.walk(root):
+    for filename in filenames:
+        _, extension = os.path.splitext(filename)
+        if extension.lower() not in text_extensions:
+            continue
+
+        path = os.path.join(dirpath, filename)
+        try:
+            with open(path, "r", encoding="utf-8") as fh:
+                original_content = fh.read()
+        except UnicodeDecodeError:
+            continue
+
+        content = original_content
+        if filename == "SKILL.md":
+            content = strip_ghc_frontmatter(content)
+
+        rewritten = content.replace(".opencode/", ".copilot/")
+        if rewritten != original_content:
+            with open(path, "w", encoding="utf-8") as fh:
+                fh.write(rewritten)
+PY
+
+  PREPARED_SKILL_SOURCE="$prepared_path"
+}
 
 # Helper function: Calculate directory hash
 calculate_dir_hash() {
@@ -53,8 +213,12 @@ calculate_dir_hash() {
 # Helper function: Sync a single skill
 sync_skill() {
   local skill_name="$1"
-  local source_path="$SKILLS_SOURCE_DIR/$skill_name"
-  local target_path="$SKILLS_TARGET_DIR/$skill_name"
+  local skills_target_dir="$2"
+  local target="$3"
+  local source_path
+  local target_path="$skills_target_dir/$skill_name"
+  prepare_skill_source_dir "$skill_name" "$target"
+  source_path="$PREPARED_SKILL_SOURCE"
   
   # Calculate source hash
   local source_hash=$(calculate_dir_hash "$source_path")
@@ -100,8 +264,9 @@ calculate_file_hash() {
 # Helper function: Sync a single agent (flat .md file)
 sync_agent() {
   local agent_file="$1"
+  local agents_target_dir="$2"
   local source_path="$AGENTS_SOURCE_DIR/$agent_file"
-  local target_path="$AGENTS_TARGET_DIR/$agent_file"
+  local target_path="$agents_target_dir/$agent_file"
 
   # Calculate source hash
   local source_hash=$(calculate_file_hash "$source_path")
@@ -136,98 +301,112 @@ sync_agent() {
   fi
 }
 
+sync_target() {
+  local target="$1"
+  local skills_target_dir
+  local agents_target_dir
+
+  skills_target_dir=$(get_skills_target_dir "$target")
+  agents_target_dir=$(get_agents_target_dir "$target")
+
+  echo "Sync target: $target"
+  echo "Syncing skills from $SKILLS_SOURCE_DIR to $skills_target_dir"
+  echo ""
+
+  mkdir -p "$skills_target_dir"
+
+  skills_installed=0
+  skills_updated=0
+  skills_unchanged=0
+
+  for skill_dir in "$SKILLS_SOURCE_DIR"/*; do
+    [ -d "$skill_dir" ] || continue
+
+    skill_name=$(basename "$skill_dir")
+
+    if sync_skill "$skill_name" "$skills_target_dir" "$target"; then
+      result=0
+    else
+      result=$?
+    fi
+
+    case $result in
+      0) skills_installed=$((skills_installed + 1)) ;;
+      1) skills_updated=$((skills_updated + 1)) ;;
+      2) skills_unchanged=$((skills_unchanged + 1)) ;;
+      *)
+        echo -e "${RED}ERROR: Failed to sync skill '$skill_name' (exit code $result)${RESET}" >&2
+        exit "$result"
+        ;;
+    esac
+  done
+
+  echo ""
+  if [ "$DRY_RUN" = true ]; then
+    echo -e "${GREEN}Skills:${RESET} $skills_installed would be installed, $skills_updated would be updated, $skills_unchanged up-to-date"
+  else
+    echo -e "${GREEN}Skills:${RESET} $skills_installed installed, $skills_updated updated, $skills_unchanged up-to-date"
+  fi
+
+  if [ -d "$AGENTS_SOURCE_DIR" ] && [ -n "$agents_target_dir" ]; then
+    echo ""
+    echo "Syncing agents from $AGENTS_SOURCE_DIR to $agents_target_dir"
+    echo ""
+
+    mkdir -p "$agents_target_dir"
+
+    agents_installed=0
+    agents_updated=0
+    agents_unchanged=0
+
+    for agent_path in "$AGENTS_SOURCE_DIR"/*.md; do
+      [ -f "$agent_path" ] || continue
+
+      agent_file=$(basename "$agent_path")
+
+      if sync_agent "$agent_file" "$agents_target_dir"; then
+        result=0
+      else
+        result=$?
+      fi
+
+      case $result in
+        0) agents_installed=$((agents_installed + 1)) ;;
+        1) agents_updated=$((agents_updated + 1)) ;;
+        2) agents_unchanged=$((agents_unchanged + 1)) ;;
+        *)
+          echo -e "${RED}ERROR: Failed to sync agent '$agent_file' (exit code $result)${RESET}" >&2
+          exit "$result"
+          ;;
+      esac
+    done
+
+    echo ""
+    if [ "$DRY_RUN" = true ]; then
+      echo -e "${GREEN}Agents:${RESET} $agents_installed would be installed, $agents_updated would be updated, $agents_unchanged up-to-date"
+    else
+      echo -e "${GREEN}Agents:${RESET} $agents_installed installed, $agents_updated updated, $agents_unchanged up-to-date"
+    fi
+  elif [ "$target" = "ghc" ]; then
+    echo ""
+    echo -e "${GRAY}Note:${RESET} Agent sync is only supported for oc; skipping agents for ghc"
+  fi
+}
+
 # Main script logic
-
-# Print header
 if [ "$DRY_RUN" = true ]; then
-  echo -e "${BLUE}🔍 DRY RUN MODE - No changes will be made${RESET}"
+  echo -e "${BLUE}DRY RUN MODE - No changes will be made${RESET}"
 fi
-echo "Syncing skills from $SKILLS_SOURCE_DIR to $SKILLS_TARGET_DIR"
-echo ""
 
-# Validate source directory exists
 if [ ! -d "$SKILLS_SOURCE_DIR" ]; then
   echo -e "${RED}ERROR: Source directory '$SKILLS_SOURCE_DIR' does not exist${RESET}"
   exit 1
 fi
 
-# Create target directory if needed
-mkdir -p "$SKILLS_TARGET_DIR"
-
-# Initialize counters
-skills_installed=0
-skills_updated=0
-skills_unchanged=0
-
-# Loop through each skill subdirectory
-for skill_dir in "$SKILLS_SOURCE_DIR"/*; do
-  # Skip if not a directory
-  [ -d "$skill_dir" ] || continue
-  
-  skill_name=$(basename "$skill_dir")
-  
-  # Call sync_skill and capture return code
-  # Temporarily disable exit-on-error to capture return codes
-  set +e
-  sync_skill "$skill_name"
-  result=$?
-  set -e
-  
-  case $result in
-    0) skills_installed=$((skills_installed + 1)) ;;
-    1) skills_updated=$((skills_updated + 1)) ;;
-    2) skills_unchanged=$((skills_unchanged + 1)) ;;
-  esac
-done
-
-# Print skills summary
-echo ""
-if [ "$DRY_RUN" = true ]; then
-  echo -e "${GREEN}Skills:${RESET} $skills_installed would be installed, $skills_updated would be updated, $skills_unchanged up-to-date"
+if [ "$SYNC_ALL" = true ]; then
+  sync_target "oc"
+  echo ""
+  sync_target "ghc"
 else
-  echo -e "${GREEN}Skills:${RESET} $skills_installed installed, $skills_updated updated, $skills_unchanged up-to-date"
-fi
-
-# ── Agents sync ──────────────────────────────────────────────────────
-
-if [ -d "$AGENTS_SOURCE_DIR" ]; then
-  echo ""
-  echo "Syncing agents from $AGENTS_SOURCE_DIR to $AGENTS_TARGET_DIR"
-  echo ""
-
-  # Create target directory if needed
-  mkdir -p "$AGENTS_TARGET_DIR"
-
-  # Initialize counters
-  agents_installed=0
-  agents_updated=0
-  agents_unchanged=0
-
-  # Loop through each agent .md file
-  for agent_path in "$AGENTS_SOURCE_DIR"/*.md; do
-    # Skip if no .md files found (glob didn't match)
-    [ -f "$agent_path" ] || continue
-
-    agent_file=$(basename "$agent_path")
-
-    # Call sync_agent and capture return code
-    set +e
-    sync_agent "$agent_file"
-    result=$?
-    set -e
-
-    case $result in
-      0) agents_installed=$((agents_installed + 1)) ;;
-      1) agents_updated=$((agents_updated + 1)) ;;
-      2) agents_unchanged=$((agents_unchanged + 1)) ;;
-    esac
-  done
-
-  # Print agents summary
-  echo ""
-  if [ "$DRY_RUN" = true ]; then
-    echo -e "${GREEN}Agents:${RESET} $agents_installed would be installed, $agents_updated would be updated, $agents_unchanged up-to-date"
-  else
-    echo -e "${GREEN}Agents:${RESET} $agents_installed installed, $agents_updated updated, $agents_unchanged up-to-date"
-  fi
+  sync_target "$TARGET_PROGRAM"
 fi

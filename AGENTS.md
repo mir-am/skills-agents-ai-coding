@@ -2,7 +2,7 @@
 
 ## Project Overview
 
-This is **opencode-skills**, a collection of reusable skills and agents for [OpenCode](https://opencode.ai). Skills are markdown-based instruction sets that teach AI agents specific workflows. Agents are markdown-based definitions that create specialized AI assistants with custom prompts, tools, and permissions.
+This is **Mir's Agents & Skills for AI Coding Assistants**, a collection of reusable Agent Skills and agents for CLI coding assistants, hosted in the `opencode-skills` repository. Skills are markdown-based instruction sets that teach AI agents specific workflows using the open Agent Skills format. Agents are markdown-based definitions that create specialized AI assistants with custom prompts, tools, and permissions.
 
 ## Repository Structure
 
@@ -23,7 +23,7 @@ opencode-skills/
     session-note/
   agents/              # Agents: flat .md files, one per agent
     code-review.md
-  sync.sh              # Installs/updates skills and agents to ~/.config/opencode/
+  sync.sh              # Installs/updates skills for supported CLIs and agents for OpenCode
   README.md
   AGENTS.md            # This file
 ```
@@ -90,16 +90,22 @@ Each agent is a **single `.md` file** in the `agents/` directory. The filename (
 - Each agent is a single `.md` file directly in `agents/`
 - Skills and agents are self-contained; all instructions live in their markdown file
 - Commands should use `bash` code blocks with exact syntax
-- Skills and agents target the OpenCode agent runtime and its tool set (Bash, Read, Write, Edit, Glob, Grep, etc.)
+- Skills use the open Agent Skills format and can be synced to supported CLIs
+- Agents target the OpenCode agent runtime and its tool set (Bash, Read, Write, Edit, Glob, Grep, etc.)
 
 ## sync.sh
 
-The sync script installs skills and agents from this repo to `~/.config/opencode/`. It:
-- Syncs skills (directories) to `~/.config/opencode/skills/` using `rsync`
-- Syncs agents (flat `.md` files) to `~/.config/opencode/agents/` using `cp`
+The sync script installs skills and agents from this repo to supported target CLIs. It:
+- Defaults to the `oc` target when no CLI argument is provided
+- Accepts `oc` and `ghc` as target arguments, plus `--sync-all` to sync all supported targets
+- Syncs skills (directories) to `~/.config/opencode/skills/` for `oc` using `rsync`
+- Syncs skills (directories) to `~/.copilot/skills/` for `ghc` using `rsync`
+- Rewrites skill-instruction workspace paths from `.opencode/` to `.copilot/` during `ghc` sync
+- Syncs agents (flat `.md` files) to `~/.config/opencode/agents/` for `oc` using `cp`
+- Creates target skills directories if they do not exist
 - Compares hashes (md5sum) to detect changes
 - Supports `--dry-run` for previewing changes
-- Reports installed/updated/up-to-date counts for both skills and agents
+- Reports installed/updated/up-to-date counts for synced skills and agents
 - Requires `rsync` to be installed
 - Syncs all skill directories under `skills/` into `~/.config/opencode/skills/`
 
@@ -130,3 +136,4 @@ When you make significant structural changes to this project (e.g., adding/remov
 
 - Skills: https://opencode.ai/docs/skills/
 - Agents: https://opencode.ai/docs/agents/
+- Agent Skills specification: https://agentskills.io/
