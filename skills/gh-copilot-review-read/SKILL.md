@@ -61,41 +61,36 @@ Accept either of these forms:
    gh auth status
    ```
 
-2. **Resolve repository + PR number**
+2. **Resolve PR and fetch metadata**
    - For PR URL, use:
      ```bash
-     gh pr view <pr> --json number,title,url,author,baseRefName,headRefName
+     gh pr view <pr> --json number,title,url,author,baseRefName,headRefName,changedFiles,additions,deletions
      ```
    - For PR number in current repo, verify remote:
      ```bash
      git remote get-url origin
-     gh pr view <number> --json number,title,url,author,baseRefName,headRefName
+     gh pr view <number> --json number,title,url,author,baseRefName,headRefName,changedFiles,additions,deletions
      ```
 
-3. **Fetch PR metadata**
-   ```bash
-   gh pr view <pr> --json number,title,url,author,baseRefName,headRefName,changedFiles,additions,deletions
-   ```
-
-4. **Fetch reviews and review comments**
+3. **Fetch reviews and review comments**
    ```bash
    gh api repos/<owner>/<repo>/pulls/<number>/reviews --paginate
    gh api repos/<owner>/<repo>/pulls/<number>/comments --paginate
    ```
 
-5. **Identify Copilot-authored feedback**
+4. **Identify Copilot-authored feedback**
    - Match exact known Copilot review identities first, including `Copilot` and `copilot-pull-request-reviewer[bot]`
    - Then match review/comment authors whose login contains `copilot`
    - Treat likely bot/service accounts as Copilot feedback when the login clearly indicates Copilot
    - Ignore human reviewer comments
 
-6. **Preserve comment text exactly**
+5. **Preserve comment text exactly**
    - Copy each Copilot comment body exactly as returned by GitHub
    - Do not paraphrase, rewrite, or normalize the wording
    - Preserve markdown, fenced code blocks, suggestion blocks, bullets, and links exactly
    - Keep suggestion blocks inside `Original Copilot Comment`; do not split them into a separate section
 
-7. **Render comment location from API metadata**
+6. **Render comment location from API metadata**
    - Use the structured comment fields such as `path`, `line`, `start_line`, `side`, `start_side`, and `subject_type`
    - Do not claim this exact header came from a single API field; it is composed from the metadata
    - Render a GitHub-style location header such as:
@@ -106,19 +101,19 @@ Accept either of these forms:
    - Use `+` for right-side/new lines and `-` for left-side/old lines when deriving the displayed line marker
    - If both `start_line` and `line` are present and different, show a range; otherwise show a single line
 
-8. **Create output directory**
+7. **Create output directory**
    ```bash
    mkdir -p .opencode/review
    ```
 
-9. **Generate filename**
+8. **Generate filename**
    - Format: `YYYY-MM-DD-HHmm-pr-<number>-copilot-review-digest.md`
    - Timestamp command:
      ```bash
      date +%Y-%m-%d-%H%M
      ```
 
-10. **Write digest**
+9. **Write digest**
       - Save markdown to `.opencode/review/<filename>.md`
       - Return the saved path to the user
 
