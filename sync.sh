@@ -264,15 +264,20 @@ sync_target() {
 
     skill_name=$(basename "$skill_dir")
 
-    set +e
-    sync_skill "$skill_name" "$skills_target_dir" "$target"
-    result=$?
-    set -e
+    if sync_skill "$skill_name" "$skills_target_dir" "$target"; then
+      result=0
+    else
+      result=$?
+    fi
 
     case $result in
       0) skills_installed=$((skills_installed + 1)) ;;
       1) skills_updated=$((skills_updated + 1)) ;;
       2) skills_unchanged=$((skills_unchanged + 1)) ;;
+      *)
+        echo -e "${RED}ERROR: Failed to sync skill '$skill_name' (exit code $result)${RESET}" >&2
+        exit "$result"
+        ;;
     esac
   done
 
@@ -299,15 +304,20 @@ sync_target() {
 
       agent_file=$(basename "$agent_path")
 
-      set +e
-      sync_agent "$agent_file" "$agents_target_dir"
-      result=$?
-      set -e
+      if sync_agent "$agent_file" "$agents_target_dir"; then
+        result=0
+      else
+        result=$?
+      fi
 
       case $result in
         0) agents_installed=$((agents_installed + 1)) ;;
         1) agents_updated=$((agents_updated + 1)) ;;
         2) agents_unchanged=$((agents_unchanged + 1)) ;;
+        *)
+          echo -e "${RED}ERROR: Failed to sync agent '$agent_file' (exit code $result)${RESET}" >&2
+          exit "$result"
+          ;;
       esac
     done
 
