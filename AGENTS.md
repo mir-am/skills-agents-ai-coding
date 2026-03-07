@@ -2,7 +2,7 @@
 
 ## Project Overview
 
-This is **opencode-skills**, a collection of reusable Agent Skills and agents for CLI coding assistants. Skills are markdown-based instruction sets that teach AI agents specific workflows using the open Agent Skills format. Agents are markdown-based definitions that create specialized AI assistants with custom prompts, tools, and permissions.
+This is **Mir's Agents & Skills for AI Coding Assistants**, a collection of reusable Agent Skills and agents for CLI coding assistants, hosted in the `opencode-skills` repository. Skills are markdown-based instruction sets that teach AI agents specific workflows using the open Agent Skills format. Agents are markdown-based definitions that create specialized AI assistants with custom prompts, tools, and permissions.
 
 ## Repository Structure
 
