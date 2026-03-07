@@ -8,6 +8,7 @@ SKILLS_SOURCE_DIR="./skills"
 AGENTS_SOURCE_DIR="./agents"
 DEFAULT_TARGET="oc"
 TARGET_PROGRAM="$DEFAULT_TARGET"
+TARGET_SPECIFIED=false
 SYNC_ALL=false
 DRY_RUN=false
 TEMP_ROOT=""
@@ -45,7 +46,13 @@ while [[ $# -gt 0 ]]; do
         usage
         exit 1
       fi
+      if [ "$TARGET_SPECIFIED" = true ]; then
+        echo "Cannot specify multiple targets: '$TARGET_PROGRAM' and '$1'"
+        usage
+        exit 1
+      fi
       TARGET_PROGRAM="$1"
+      TARGET_SPECIFIED=true
       shift
       ;;
     --sync-all)
