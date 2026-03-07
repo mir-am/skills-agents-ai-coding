@@ -99,7 +99,7 @@ The sync script installs skills and agents from this repo to `~/.config/opencode
 - Supports `--dry-run` for previewing changes
 - Reports installed/updated/up-to-date counts for both skills and agents
 - Requires `rsync` to be installed
-- Syncs newly added skills such as `gh-copilot-review-read/` into `~/.config/opencode/skills/`
+- Syncs all skill directories under `skills/` into `~/.config/opencode/skills/`
 
 ## Adding a New Skill
 
