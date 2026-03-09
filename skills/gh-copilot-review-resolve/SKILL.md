@@ -98,10 +98,14 @@ Custom reply text is allowed per thread, but these two action labels should be t
 3. **Fetch review threads with GraphQL**
    ```bash
    query=$(cat <<'EOF'
-   query($owner: String!, $repo: String!, $number: Int!) {
+   query($owner: String!, $repo: String!, $number: Int!, $threadCursor: String) {
      repository(owner: $owner, name: $repo) {
        pullRequest(number: $number) {
-         reviewThreads(first: 100) {
+         reviewThreads(first: 100, after: $threadCursor) {
+           pageInfo {
+             hasNextPage
+             endCursor
+           }
            nodes {
              id
              isResolved
@@ -110,6 +114,10 @@ Custom reply text is allowed per thread, but these two action labels should be t
              line
              startLine
              comments(first: 20) {
+               pageInfo {
+                 hasNextPage
+                 endCursor
+               }
                nodes {
                  id
                  body
@@ -130,6 +138,9 @@ Custom reply text is allowed per thread, but these two action labels should be t
 
    gh api graphql -f query="$query" -F owner='<owner>' -F repo='<repo>' -F number=<number>
    ```
+   - Include `pageInfo { hasNextPage endCursor }` for both `reviewThreads` and `comments`
+   - Continue fetching `reviewThreads` with an `after` cursor until `hasNextPage` is `false`
+   - If a thread's `comments` connection has more pages, fetch the remaining comment pages before deciding whether the thread is Copilot-authored
 
 4. **Identify Copilot-authored threads**
    - Match exact known Copilot identities first, including `Copilot` and `copilot-pull-request-reviewer[bot]`
@@ -145,14 +156,19 @@ Custom reply text is allowed per thread, but these two action labels should be t
      - latest Copilot comment excerpt
    - If the user has not clearly identified thread actions yet, stop here and ask only for the missing thread/action mapping
 
-6. **Prepare replies for selected threads**
+6. **Determine the reply wording source for `addressed` threads**
+   - If the user already provided the commit reference and subject, use it
+   - Otherwise, ask the user for the commit reference before using the full template `Addressed in <commit> (<subject>).`
+   - If the user does not want to supply a subject, fall back to `Addressed in <commit>.`
+
+7. **Prepare replies for selected threads**
    - For `addressed`, prefer a commit-aware reply such as:
-     - `Addressed in 66022de (fix: harden dataset scripts).`
+      - `Addressed in 66022de (fix: harden dataset scripts).`
    - For `ignored`, prefer:
-     - `Ignoring this suggestion for now.`
+      - `Ignoring this suggestion for now.`
    - If the user provided custom wording, use it exactly
 
-7. **Reply to each selected review thread**
+8. **Reply to each selected review thread**
    ```bash
    query=$(cat <<'EOF'
    mutation($threadId: ID!, $body: String!) {
@@ -168,7 +184,7 @@ Custom reply text is allowed per thread, but these two action labels should be t
    gh api graphql -f query="$query" -F threadId='<thread-id>' -F body='<reply-body>'
    ```
 
-8. **Resolve each selected thread after replying**
+9. **Resolve each selected thread after replying**
    ```bash
    query=$(cat <<'EOF'
    mutation($threadId: ID!) {
@@ -185,7 +201,7 @@ Custom reply text is allowed per thread, but these two action labels should be t
    gh api graphql -f query="$query" -F threadId='<thread-id>'
    ```
 
-9. **Report results**
+10. **Report results**
    - Return which threads were resolved as `addressed`
    - Return which threads were resolved as `ignored`
    - Include reply URLs when available
@@ -244,10 +260,14 @@ Resolved 3 Copilot threads on PR #1.
 
 ```bash
 query=$(cat <<'EOF'
-query($owner: String!, $repo: String!, $number: Int!) {
+query($owner: String!, $repo: String!, $number: Int!, $threadCursor: String) {
   repository(owner: $owner, name: $repo) {
     pullRequest(number: $number) {
-      reviewThreads(first: 100) {
+      reviewThreads(first: 100, after: $threadCursor) {
+        pageInfo {
+          hasNextPage
+          endCursor
+        }
         nodes {
           id
           isResolved
@@ -256,6 +276,10 @@ query($owner: String!, $repo: String!, $number: Int!) {
           line
           startLine
           comments(first: 20) {
+            pageInfo {
+              hasNextPage
+              endCursor
+            }
             nodes {
               id
               body
@@ -276,6 +300,8 @@ EOF
 
 gh api graphql -f query="$query" -F owner='<owner>' -F repo='<repo>' -F number=<number>
 ```
+
+Repeat the `reviewThreads` query until thread pagination is exhausted, and fetch additional comment pages for any thread whose `comments.pageInfo.hasNextPage` is `true` before classifying it.
 
 ### Reply to a review thread
 
