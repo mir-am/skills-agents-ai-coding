@@ -11,6 +11,8 @@ opencode-skills/
   skills/              # Skills: one directory per skill, each containing a SKILL.md
     gh-copilot-review-read/
       SKILL.md
+    gh-copilot-review-resolve/
+      SKILL.md
     gh-cr-submit/
     gh-issue/
     gh-issue-fix/

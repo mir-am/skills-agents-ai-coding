@@ -42,6 +42,12 @@ Pick up a GitHub issue and implement a fix or feature with a user-approved plan.
 Read GitHub Copilot PR review comments, pair them with suggestions (if any), and write a markdown digest to `.opencode/review/`.
 
 **Requirements:** GitHub CLI (`gh`)
+
+### gh-copilot-review-resolve
+Resolve selected GitHub Copilot PR review threads with cautious defaults, posting `addressed` or `ignored` replies via `gh` GraphQL before resolving each thread.
+
+**Requirements:** GitHub CLI (`gh`)
+
 ### gh-pr-review
 Review a GitHub Pull Request using gh CLI and provide structured feedback. Fetches PR metadata, diffs, and changed files, then generates a comprehensive code review focusing on quality, bugs, performance, and security.
 
