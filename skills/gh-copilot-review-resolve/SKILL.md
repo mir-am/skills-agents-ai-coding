@@ -140,10 +140,10 @@ Custom reply text is allowed per thread, but these two action labels should be t
    ```
    - Include `pageInfo { hasNextPage endCursor }` for both `reviewThreads` and `comments`
    - Continue fetching `reviewThreads` with an `after` cursor until `hasNextPage` is `false`
-   - If a thread's `comments` connection has more pages, fetch the remaining comment pages before deciding whether the thread is Copilot-authored
+   - If a thread's `comments` connection has more pages, fetch the remaining comment pages with a dedicated per-thread query before deciding whether the thread is Copilot-authored
 
 4. **Identify Copilot-authored threads**
-   - Match exact known Copilot identities first, including `Copilot` and `copilot-pull-request-reviewer[bot]`
+   - Match exact known Copilot identities first, including `Copilot`, `copilot-pull-request-reviewer`, and `copilot-pull-request-reviewer[bot]`
    - Then match comment authors whose login contains `copilot`
    - Ignore human-only threads by default
 
@@ -154,6 +154,7 @@ Custom reply text is allowed per thread, but these two action labels should be t
      - `line` or `startLine`/`line`
      - `isOutdated`
      - latest Copilot comment excerpt
+   - If line metadata is missing, still show the thread using `path` and `isOutdated`; do not fail preview just because the thread no longer has line coordinates
    - If the user has not clearly identified thread actions yet, stop here and ask only for the missing thread/action mapping
 
 6. **Determine the reply wording source for `addressed` threads**
@@ -223,6 +224,7 @@ Even in bulk mode, separate the actions into at least these groups:
 Treat a thread as Copilot feedback when at least one review-thread comment is authored by:
 
 - `Copilot`
+- `copilot-pull-request-reviewer`
 - `copilot-pull-request-reviewer[bot]`
 - a login containing `copilot`
 
@@ -302,6 +304,40 @@ gh api graphql -f query="$query" -F owner='<owner>' -F repo='<repo>' -F number=<
 ```
 
 Repeat the `reviewThreads` query until thread pagination is exhausted, and fetch additional comment pages for any thread whose `comments.pageInfo.hasNextPage` is `true` before classifying it.
+
+### Fetch additional comments for one thread
+
+```bash
+query=$(cat <<'EOF'
+query($threadId: ID!, $commentCursor: String) {
+  node(id: $threadId) {
+    ... on PullRequestReviewThread {
+      id
+      comments(first: 20, after: $commentCursor) {
+        pageInfo {
+          hasNextPage
+          endCursor
+        }
+        nodes {
+          id
+          body
+          url
+          createdAt
+          author {
+            login
+          }
+        }
+      }
+    }
+  }
+}
+EOF
+)
+
+gh api graphql -f query="$query" -F threadId='<thread-id>'
+```
+
+Use this per-thread query when the nested `comments` connection reports more pages than the initial `reviewThreads` query returned.
 
 ### Reply to a review thread
 
