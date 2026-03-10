@@ -140,9 +140,12 @@ Important behavior:
      ```
    - Post the comment with:
      ```bash
-     gh pr comment <pr> --body '@copilot Please review/comment only on `path/to/file` in this pull request. Focus on issues, risks, and improvements in that scope only. Do not make changes.'
+     cat <<'EOF' | gh pr comment <pr> --body-file -
+     @copilot Please review/comment only on `path/to/file` in this pull request. Focus on issues, risks, and improvements in that scope only. Do not make changes.
+     EOF
      ```
-   - If the user supplied a custom scoped prompt, preserve their intent but keep the instruction `Do not make changes.` unless they explicitly ask for a different behavior
+   - If the user supplied a custom scoped prompt, pass it via `--body-file` rather than embedding it directly in shell quotes
+   - Preserve the user's intent but keep the instruction `Do not make changes.` unless they explicitly ask for a different behavior
 
 6. **Report results**
    - Return whether the skill triggered:
