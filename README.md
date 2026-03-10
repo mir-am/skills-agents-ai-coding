@@ -44,7 +44,7 @@ Read GitHub Copilot PR review comments, pair them with suggestions (if any), and
 **Requirements:** GitHub CLI (`gh`)
 
 ### gh-copilot-review
-Request a GitHub Copilot review for a PR, or post a scoped `@copilot` review/comment request for a specific file or narrower PR scope.
+Request a GitHub Copilot review for a PR via `gh` CLI.
 
 **Requirements:** GitHub CLI (`gh`)
 
