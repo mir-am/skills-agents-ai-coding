@@ -97,6 +97,8 @@ Each agent is a **single `.md` file** in the `agents/` directory. The filename (
 - Skills use the open Agent Skills format and can be synced to supported CLIs
 - Agents target the OpenCode agent runtime and its tool set (Bash, Read, Write, Edit, Glob, Grep, etc.)
 - Some GitHub-focused skills may combine official API flows with clearly labeled best-effort prompt/comment flows when GitHub features are partially exposed through `gh`
+- Never commit directly on `main` or `master`; create or switch to a feature branch first
+- Never push directly to `main` or `master`; changes must land through a pull request
 
 ## sync.sh
 
