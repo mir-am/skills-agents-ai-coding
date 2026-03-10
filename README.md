@@ -43,6 +43,11 @@ Read GitHub Copilot PR review comments, pair them with suggestions (if any), and
 
 **Requirements:** GitHub CLI (`gh`)
 
+### gh-copilot-review
+Request a GitHub Copilot review for a PR, or post a scoped `@copilot` review/comment request for a specific file or narrower PR scope.
+
+**Requirements:** GitHub CLI (`gh`)
+
 ### gh-copilot-review-resolve
 Resolve selected GitHub Copilot PR review threads with cautious defaults, posting `addressed` or `ignored` replies via `gh` GraphQL before resolving each thread.
 

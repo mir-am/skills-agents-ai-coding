@@ -11,6 +11,8 @@ opencode-skills/
   skills/              # Skills: one directory per skill, each containing a SKILL.md
     gh-copilot-review-read/
       SKILL.md
+    gh-copilot-review/
+      SKILL.md
     gh-copilot-review-resolve/
       SKILL.md
     gh-cr-submit/
@@ -94,6 +96,7 @@ Each agent is a **single `.md` file** in the `agents/` directory. The filename (
 - Commands should use `bash` code blocks with exact syntax
 - Skills use the open Agent Skills format and can be synced to supported CLIs
 - Agents target the OpenCode agent runtime and its tool set (Bash, Read, Write, Edit, Glob, Grep, etc.)
+- Some GitHub-focused skills may combine official API flows with clearly labeled best-effort prompt/comment flows when GitHub features are partially exposed through `gh`
 
 ## sync.sh
 
