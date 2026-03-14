@@ -22,7 +22,7 @@ Use this skill when the user wants to request a GitHub Copilot review on a pull 
 
 ## Prerequisites
 
-- GitHub CLI (`gh`) must be installed and authenticated
+- GitHub CLI (`gh`) v2.88.0 or later must be installed and authenticated
 - If given only a PR number, the current repository must have a GitHub `origin` remote
 - The target PR must be accessible with the current GitHub credentials
 - If `gh` not installed -> error: `Error: GitHub CLI not found. Install: https://cli.github.com/`
@@ -53,39 +53,26 @@ Resolution rules:
 2. **Resolve PR metadata**
    - For PR URL:
      ```bash
-     gh pr view <pr> --json id,number,title,url,author,baseRefName,headRefName
+     gh pr view <pr> --json number,title,url,author,baseRefName,headRefName
      ```
    - For PR number in current repo:
      ```bash
      git remote get-url origin
-     gh pr view <number> --json id,number,title,url,author,baseRefName,headRefName
+     gh pr view <number> --json number,title,url,author,baseRefName,headRefName
      ```
 
 3. **Request Copilot review for the full PR**
    ```bash
-   query=$(cat <<'EOF'
-   mutation($pullRequestId: ID!, $botLogins: [String!]) {
-     requestReviewsByLogin(input: {
-       pullRequestId: $pullRequestId,
-       botLogins: $botLogins,
-       union: false
-     }) {
-       clientMutationId
-     }
-   }
-   EOF
-   )
+   gh pr edit <pr> --add-reviewer @copilot
 
-   gh api graphql \
-     -f query="$query" \
-     -F pullRequestId='<pr-node-id>' \
-     -f botLogins[]='copilot-pull-request-reviewer[bot]'
+   # or, for PR number in the current repository
+   gh pr edit <number> --add-reviewer @copilot
    ```
 
 4. **Report results**
    ```text
    Requested GitHub Copilot review for PR #123.
-   - Mode: PR-wide reviewer request
+   - Mode: Added @copilot as reviewer via gh CLI
    - PR: https://github.com/owner/repo/pull/123
    ```
 
@@ -93,14 +80,16 @@ Resolution rules:
 
 - Invalid input -> `Error: Provide a GitHub PR URL or PR number`
 - `gh` missing -> `Error: GitHub CLI not found. Install: https://cli.github.com/`
+- `gh` too old -> `Error: GitHub CLI v2.88.0+ is required for @copilot reviewer requests`
 - Not authenticated -> `Error: Not authenticated with GitHub. Run: gh auth login`
 - No GitHub remote for PR number mode -> `Error: No GitHub remote found. Provide a full PR URL or set origin`
 - PR not found or inaccessible -> `Error: Unable to access the pull request with current GitHub credentials`
-- Cannot request reviewers -> `Error: Unable to request Copilot review on this pull request`
+- Reviewer add failed -> `Error: Unable to add @copilot as a reviewer on this pull request`
 - Copilot unavailable for repository or plan -> `Error: GitHub Copilot review is not available for this repository or account`
 
 ## Notes
 
 - This skill requests a PR-wide Copilot review only
 - Use `gh` CLI for all interactions
+- This skill uses native reviewer support through `gh pr edit --add-reviewer @copilot`
 - Do not use this skill for file-scoped or comment-driven Copilot prompts
