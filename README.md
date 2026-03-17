@@ -53,6 +53,11 @@ Resolve selected GitHub Copilot PR review threads with cautious defaults, postin
 
 **Requirements:** GitHub CLI (`gh`)
 
+### gh-protect-default-branch
+Protect the default branch from direct pushes so changes land only via pull requests.
+
+**Requirements:** GitHub CLI (`gh`), repository admin permissions
+
 ### gh-pr-review
 Review a GitHub Pull Request using gh CLI and provide structured feedback. Fetches PR metadata, diffs, and changed files, then generates a comprehensive code review focusing on quality, bugs, performance, and security.
 
