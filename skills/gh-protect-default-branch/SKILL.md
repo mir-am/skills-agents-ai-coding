@@ -66,7 +66,7 @@ Use this skill when the user wants to protect the default branch from direct pus
    ```bash
    gh api -H "Accept: application/vnd.github+json" \
      "repos/{owner}/{repo}/branches/{branch}/protection" \
-     --jq '{pr_required: (.required_pull_request_reviews != null), force_push_blocked: (.allow_force_pushes.enabled == false), deletions_blocked: (.allow_deletions.enabled == false)}'
+     --jq '{pr_required: (.required_pull_request_reviews != null), force_push_blocked: ((.allow_force_pushes.enabled // false) == false), deletions_blocked: ((.allow_deletions.enabled // false) == false)}'
    ```
    All three fields should be `true`.
 
