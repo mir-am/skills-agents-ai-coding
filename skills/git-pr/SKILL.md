@@ -16,7 +16,7 @@ metadata:
 - Generate PR title summarizing all commits + session work (no type prefix)
 - Create concise PR description with summary and 3-5 key changes
 - Link GitHub issue if working on one in current session
-- Create GitHub PR using `gh` CLI
+- Create GitHub PR using `gh` CLI and self-assign it to the authenticated GitHub user
 
 ## When to use me
 
@@ -79,6 +79,12 @@ Use this skill when the user asks to create a pull request from the current feat
 - Fallback: `main` (if master doesn't exist)
 - Check: `git rev-parse --verify master 2>/dev/null && echo "master" || echo "main"`
 
+## Assignee Resolution
+
+- Always self-assign the PR to the authenticated GitHub CLI account
+- Use `--assignee @me` with `gh pr create`
+- Do not derive the assignee from local git config such as `git config user.name` or email
+
 ## Issue Linking
 
 If the agent is working on a GitHub issue in the current session:
@@ -93,10 +99,11 @@ If the agent is working on a GitHub issue in the current session:
 
 Execute the pull request creation:
 ```bash
-gh pr create --base <master-or-main> --title "<title>" --body "<description>"
+gh pr create --base <master-or-main> --assignee @me --title "<title>" --body "<description>"
 ```
 
 - If working on an issue, append `Closes #<issue-number>` to the description
+- Always include `--assignee @me` so the PR is assigned to the signed-in `gh` user
 - Return the PR URL to the user
 
 ## Error Handling
@@ -104,3 +111,5 @@ gh pr create --base <master-or-main> --title "<title>" --body "<description>"
 - Not on feature branch → "Error: Cannot create PR from master/main branch"
 - No commits ahead → "Warning: No commits to create PR for"
 - `gh` not installed → "Error: GitHub CLI not found. Install: https://cli.github.com/"
+- `gh` not authenticated / `gh auth status` fails → "Error: GitHub CLI not authenticated. Run: gh auth login"
+- Self-assignment fails (for example, assignees unsupported or user not assignable) → surface the `gh` error clearly and do not claim the PR was self-assigned
