@@ -47,7 +47,7 @@ Do not use this skill when:
 [ -f CHANGELOG.md ]
 
 # Check unreleased section exists exactly once
-grep -n '^## \[Unreleased\]$' CHANGELOG.md
+[ "$(grep -c '^## \[Unreleased\]$' CHANGELOG.md)" -eq 1 ]
 
 # Get current release date
 date +%F
@@ -78,12 +78,21 @@ If you need to verify detailed release-format rules during execution, use the We
 If missing -> error: `Error: CHANGELOG.md not found. Create it first before bumping a release.`
 
 ```bash
-grep -n '^## \[Unreleased\]$' CHANGELOG.md
+unreleased_count="$(grep -c '^## \[Unreleased\]$' CHANGELOG.md)"
+
+if [ "$unreleased_count" -eq 0 ]; then
+  echo "Error: CHANGELOG.md does not contain a ## [Unreleased] section."
+elif [ "$unreleased_count" -gt 1 ]; then
+  echo "Error: Multiple ## [Unreleased] sections found. Normalize the changelog before running this skill."
+else
+  echo "found exactly one"
+fi
 ```
 
 Rules:
 - Exactly one match is required
 - Zero matches -> error: `Error: CHANGELOG.md does not contain a ## [Unreleased] section.`
+- One match -> continue
 - More than one match -> error: `Error: Multiple ## [Unreleased] sections found. Normalize the changelog before running this skill.`
 
 ### Step 2: Collect Release Date
