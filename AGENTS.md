@@ -9,6 +9,8 @@ This is **Mir's Agents & Skills for AI Coding Assistants**, a collection of reus
 ```
 opencode-skills/
   skills/              # Skills: one directory per skill, each containing a SKILL.md
+    changelog-bump-ver/
+      SKILL.md
     gh-copilot-review-read/
       SKILL.md
     gh-copilot-review/
