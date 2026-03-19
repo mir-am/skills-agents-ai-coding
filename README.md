@@ -19,7 +19,7 @@ Smart git commit with branch protection, session-aware staging, and conventional
 **Requirements:** git
 
 ### git-pr
-Create GitHub pull requests with a smart title and description from branch commits.
+Create GitHub pull requests with a smart title and description from branch commits, then self-assign them to the authenticated `gh` user.
 
 **Requirements:** git, GitHub CLI (`gh`)
 
