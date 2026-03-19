@@ -111,4 +111,5 @@ gh pr create --base <master-or-main> --assignee @me --title "<title>" --body "<d
 - Not on feature branch → "Error: Cannot create PR from master/main branch"
 - No commits ahead → "Warning: No commits to create PR for"
 - `gh` not installed → "Error: GitHub CLI not found. Install: https://cli.github.com/"
+- `gh` not authenticated / `gh auth status` fails → "Error: GitHub CLI not authenticated. Run: gh auth login"
 - Self-assignment fails (for example, assignees unsupported or user not assignable) → surface the `gh` error clearly and do not claim the PR was self-assigned
