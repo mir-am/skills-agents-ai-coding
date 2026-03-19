@@ -47,7 +47,7 @@ Do not use this skill when:
 [ -f CHANGELOG.md ]
 
 # Check unreleased section exists exactly once
-rg -n '^## \[Unreleased\]$' CHANGELOG.md
+grep -n '^## \[Unreleased\]$' CHANGELOG.md
 
 # Get current release date
 date +%F
@@ -78,7 +78,7 @@ If you need to verify detailed release-format rules during execution, use the We
 If missing -> error: `Error: CHANGELOG.md not found. Create it first before bumping a release.`
 
 ```bash
-rg -n '^## \[Unreleased\]$' CHANGELOG.md
+grep -n '^## \[Unreleased\]$' CHANGELOG.md
 ```
 
 Rules:
@@ -200,7 +200,7 @@ Rules:
 Search for Maven POM files:
 
 ```bash
-rg --files -g 'pom.xml'
+find . -name 'pom.xml' -type f
 ```
 
 For each `pom.xml` found:
@@ -387,7 +387,7 @@ Do not change these automatically:
 1. **Validate files:**
    ```bash
    [ -f CHANGELOG.md ] && echo "found"
-   rg -n '^## \[Unreleased\]$' CHANGELOG.md
+   grep -n '^## \[Unreleased\]$' CHANGELOG.md
    ```
 
 2. **Get current date:**
