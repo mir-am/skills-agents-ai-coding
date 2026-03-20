@@ -63,8 +63,8 @@ git remote get-url origin
 # Check working tree is clean
 git status --short
 
-# Detect default branch from remote HEAD
-git symbolic-ref refs/remotes/origin/HEAD 2>/dev/null | sed 's@^refs/remotes/origin/@@'
+# Detect default branch from GitHub metadata
+gh repo view --json defaultBranchRef --jq '.defaultBranchRef.name'
 ```
 
 **Error messages:**
@@ -109,18 +109,27 @@ git remote get-url origin >/dev/null
 If this fails -> error: `Error: Git remote 'origin' not found.`
 
 ```bash
-default_branch="$(git symbolic-ref refs/remotes/origin/HEAD 2>/dev/null | sed 's@^refs/remotes/origin/@@')"
+default_branch="$(gh repo view --json defaultBranchRef --jq '.defaultBranchRef.name' 2>/dev/null)"
 
 if [ -z "$default_branch" ]; then
-  if git show-ref --verify --quiet refs/heads/main; then
-    default_branch="main"
-  elif git show-ref --verify --quiet refs/heads/master; then
-    default_branch="master"
+  default_branch="$(git symbolic-ref refs/remotes/origin/HEAD 2>/dev/null | sed 's@^refs/remotes/origin/@@')"
+
+  if [ -z "$default_branch" ]; then
+    if git show-ref --verify --quiet refs/heads/main; then
+      default_branch="main"
+    elif git show-ref --verify --quiet refs/heads/master; then
+      default_branch="master"
+    fi
   fi
 fi
 
 printf '%s\n' "$default_branch"
 ```
+
+Rules:
+- Prefer `gh repo view` so repositories with non-`main` default branches are handled correctly
+- If GitHub metadata is unavailable, fall back to `origin/HEAD`
+- If `origin/HEAD` is unavailable, fall back to local `main`, then local `master`
 
 If empty -> error: `Error: Could not determine the default branch.`
 
@@ -268,7 +277,28 @@ Body construction rules:
 - Keep the exact subsection content from the changelog
 - Always include the `## Full Changelog` section at the end
 
-### Step 7: Create the Annotated Tag
+### Step 7: Write the Prerelease Notes File
+
+Write the assembled prerelease body from Step 6 into a temporary file before creating the release:
+
+```bash
+notes_file="$(mktemp)"
+
+cat > "$notes_file" <<'EOF'
+### Added
+- Example release note
+
+## Full Changelog
+https://github.com/OWNER/REPO/compare/v0.4.0...v0.5.0
+EOF
+```
+
+Rules:
+- The file content must be the exact assembled release body from Step 6
+- Do not pass an empty temp file to `gh release create --notes-file`
+- Remove the temp file after the release command succeeds or fails
+
+### Step 8: Create the Annotated Tag
 
 Create the release tag at the current `HEAD` commit:
 
@@ -281,13 +311,25 @@ Rules:
 - Tag the current `HEAD` only after all validation passes
 - Do not retag an existing version
 
-### Step 8: Create the GitHub Prerelease
+### Step 9: Push and Verify the Annotated Tag
+
+Push the annotated tag to `origin` before creating the GitHub prerelease:
+
+```bash
+git push origin "vX.Y.Z"
+git ls-remote --tags origin "refs/tags/vX.Y.Z"
+```
+
+Rules:
+- Push the tag before running `gh release create`
+- Ensure the prerelease is published from the annotated tag you created in Step 8
+- If the tag push fails, stop and report the error instead of creating the release
+
+### Step 10: Create the GitHub Prerelease
 
 Create a temporary notes file, then publish the prerelease:
 
 ```bash
-notes_file="$(mktemp)"
-
 gh release create "vX.Y.Z" \
   --prerelease \
   --title "vX.Y.Z" \
@@ -297,15 +339,22 @@ gh release create "vX.Y.Z" \
 Behavior rules:
 - The release must be marked with `--prerelease`
 - The release title must match the tag exactly
-- The release notes must come from the generated body in Step 6
-- Let GitHub associate the release with the new tag being created from the current commit
+- The release notes must come from the generated body written in Step 7
+- Use the already-pushed annotated tag from Step 9 rather than relying on GitHub to create a new ref
 
 If `gh release create` fails after the local tag was created:
 - Report the failure clearly
-- Tell the user the local tag now exists and may need cleanup or retry
+- Tell the user the local and remote tag now exist and may need cleanup or retry
+- Remove the temp notes file before exiting
 - Do not claim release success
 
-### Step 9: Report the Result
+After the release command finishes, clean up the temp file:
+
+```bash
+rm -f "$notes_file"
+```
+
+### Step 11: Report the Result
 
 Report:
 - Published tag
@@ -405,7 +454,10 @@ https://github.com/OWNER/REPO/compare/v0.4.0...v0.5.0
 | Current branch is not the default branch | Error: `Releases must be created from the default branch tip.` |
 | Working tree is dirty | Error: `Working tree is not clean. Commit or stash changes before creating a release.` |
 | Tag already exists locally or remotely | Error: `Tag vX.Y.Z already exists locally or on origin.` |
+| Could not determine default branch from GitHub metadata | Fall back to `origin/HEAD`, then local `main`, then local `master` |
 | Previous changelog version exists but tag is missing | Error: `Previous changelog version exists but matching git tag was not found.` |
+| Temp notes file was created but not populated | Error: stop before `gh release create`; do not publish empty notes |
+| Annotated tag was created locally but not pushed | Push and verify the tag on `origin` before creating the release |
 | First release with no older version heading | Compare first commit on default branch to new tag |
 | First release with a single commit | Compare that same first commit to the new tag |
 | `gh release create` fails after tag creation | Report partial failure and note that the local tag now exists |
@@ -425,7 +477,7 @@ https://github.com/OWNER/REPO/compare/v0.4.0...v0.5.0
 
 2. **Detect default branch:**
    ```bash
-   git symbolic-ref refs/remotes/origin/HEAD 2>/dev/null | sed 's@^refs/remotes/origin/@@'
+   gh repo view --json defaultBranchRef --jq '.defaultBranchRef.name'
    # main
    ```
 
@@ -451,14 +503,30 @@ https://github.com/OWNER/REPO/compare/v0.4.0...v0.5.0
    https://github.com/OWNER/REPO/compare/v0.4.0...v0.5.0
    ```
 
-6. **Create tag and prerelease:**
+6. **Write notes, push tag, and create prerelease:**
    ```bash
+   notes_file="$(mktemp)"
+
+   cat > "$notes_file" <<'EOF'
+   ### Added
+   - Add `gh-release` skill for annotated tags and GitHub prereleases
+
+   ### Fixed
+   - Preserve changelog subsection order in generated release notes
+
+   ## Full Changelog
+   https://github.com/OWNER/REPO/compare/v0.4.0...v0.5.0
+   EOF
+
    git tag -a "v0.5.0" -m "Release v0.5.0"
+   git push origin "v0.5.0"
 
    gh release create "v0.5.0" \
      --prerelease \
      --title "v0.5.0" \
      --notes-file "$notes_file"
+
+   rm -f "$notes_file"
    ```
 
 7. **Notify the user:**
