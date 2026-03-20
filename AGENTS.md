@@ -21,6 +21,7 @@ opencode-skills/
     gh-issue/
     gh-issue-fix/
     gh-pr-review/
+    gh-release/
     git-commit/
     git-pr/
     git-push/
@@ -124,6 +125,8 @@ The sync script installs skills and agents from this repo to supported target CL
 2. Add a `SKILL.md` following the frontmatter + markdown body pattern above
 3. Update `README.md` to list the new skill under "Available Skills"
 4. Test by running `./sync.sh --dry-run`
+
+Release-oriented skills can compose with each other. For example, `changelog-bump-ver` prepares the latest versioned changelog entry, and `gh-release` publishes that entry as an annotated tag and GitHub prerelease.
 
 ## Adding a New Agent
 
