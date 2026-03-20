@@ -64,7 +64,7 @@ Review a GitHub Pull Request using gh CLI and provide structured feedback. Fetch
 **Requirements:** git, GitHub CLI (`gh`)
 
 ### gh-release
-Create an annotated git tag and GitHub prerelease from the latest versioned `CHANGELOG.md` entry. Uses the newest versioned section below `[Unreleased]` as the release notes source, preserves optional subsections like `Misc`, and appends a full changelog compare link.
+Create an annotated git tag and GitHub prerelease from the latest versioned `CHANGELOG.md` entry. Uses the newest versioned section below `[Unreleased]` as the release notes source, preserves the repo's `Misc` subsection at the end when present, and appends a full changelog compare link.
 
 **Requirements:** git, GitHub CLI (`gh`)
 
@@ -74,7 +74,7 @@ Submit AI-generated code review from `.opencode/review/` to GitHub PR. Validates
 **Requirements:** git, GitHub CLI (`gh`)
 
 ### changelog-bump-ver
-Promote `CHANGELOG.md` unreleased notes into the next release, infer the current SemVer bump style when possible, add a dated release heading, recreate an empty `[Unreleased]` template while preserving the repo's optional `Misc` subsection, and update direct Maven project versions in `pom.xml` files.
+Promote `CHANGELOG.md` unreleased notes into the next release, infer the current SemVer bump style when possible, add a dated release heading, recreate an empty `[Unreleased]` template with `Misc` at the end for this repo's extended changelog format, and update direct Maven project versions in `pom.xml` files.
 
 **Requirements:** none
 

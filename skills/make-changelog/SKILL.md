@@ -15,7 +15,7 @@ metadata:
 - Extract up to 10 major features from README.md, commit history, and codebase structure
 - Place all extracted entries under [Unreleased] section (no version number yet)
 - Classify entries into Added or Misc based on whether they describe new capabilities or notable catch-all code changes
-- Include empty sections for Changed, Deprecated, Removed, Fixed, Security, and Misc
+- Include empty sections for Changed, Deprecated, Removed, Fixed, Security, and Misc at the end
 - Note adherence to Semantic Versioning for future releases
 - Notify if additional important features exist beyond the top 10
 - Provide guidance on moving to versioned releases later
@@ -218,8 +218,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-### Misc
-
 ### Deprecated
 
 ### Removed
@@ -227,12 +225,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 ### Security
+
+### Misc
 ```
 
 **Rules:**
 - All features go under `## [Unreleased]` section
 - No version number or date yet
-- Keep empty sections (Changed, Misc, Deprecated, Removed, Fixed, Security) present
+- Keep empty sections (Changed, Deprecated, Removed, Fixed, Security, Misc) present
 - Place each extracted entry in either `### Added` or `### Misc` with `- ` bullet format
 - Use `### Misc` only for notable code or logic changes and merged PRs that do not fit the standard Keep a Changelog sections
 

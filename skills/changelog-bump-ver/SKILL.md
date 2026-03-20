@@ -13,7 +13,7 @@ metadata:
 
 - Promote `## [Unreleased]` entries in `CHANGELOG.md` into a new versioned release section
 - Create a fresh empty `## [Unreleased]` section above the new release
-- Preserve Keep a Changelog structure with empty `Added`, `Changed`, `Deprecated`, `Removed`, `Fixed`, and `Security` subsections, plus `Misc` when using the repo's extended template
+- Preserve Keep a Changelog structure with empty `Added`, `Changed`, `Deprecated`, `Removed`, `Fixed`, and `Security` subsections, and include `Misc` at the end for this repo's extended template
 - Determine the next version using the user's requested bump method when provided
 - Otherwise infer the current bump method from existing changelog history and fall back to `minor` when history is insufficient or unclear
 - Use the current system date from `date +%F` in the new release heading
@@ -196,16 +196,16 @@ Fresh unreleased template:
 
 ### Fixed
 
-### Misc
-
 ### Security
+
+### Misc
 ```
 
 Rules:
 - The new empty unreleased section must appear directly above the new release
 - The new release heading must always include the date from `date +%F`
 - If the promoted unreleased content did not contain one of the standard subsections, do not invent release notes; just move what existed
-- If the changelog uses the repo's extended template, preserve `### Misc` in both the promoted release content and the refreshed empty unreleased template
+- For this repo's extended template, keep `### Misc` as the last subsection in both the promoted release content and the refreshed empty unreleased template
 - Keep surrounding whitespace tidy and consistent
 
 ### Step 8: Update Maven `pom.xml` Files
@@ -325,9 +325,9 @@ When multiple valid version headings exist:
 
 ### Fixed
 
-### Misc
-
 ### Security
+
+### Misc
 
 ## [v0.3.0] - 2026-03-19
 
@@ -336,6 +336,8 @@ When multiple valid version headings exist:
 
 ### Fixed
 - Resolve session timeout bug
+
+### Security
 
 ### Misc
 - Refactor access-control evaluation flow

@@ -15,7 +15,7 @@ metadata:
 - Create a GitHub prerelease with notes copied from that same changelog entry
 - Treat the first versioned section below `## [Unreleased]` as the release to publish
 - Preserve the release section subsections and bullets exactly as written in the changelog
-- Preserve the repo's optional `### Misc` subsection in release notes when present
+- Preserve the repo's `### Misc` subsection at the end of release notes when present
 - Append a `## Full Changelog` section that compares the previous release to the new tag
 - Handle first-release repositories by comparing the default branch's first commit to the new release tag
 
@@ -189,7 +189,7 @@ Rules:
 - Keep blank lines and subsection order intact
 - Do not invent missing `Added`, `Changed`, `Fixed`, or other subsections
 - Allow nonstandard subsections and keep them unchanged
-- Preserve `### Misc` exactly as written when the changelog uses the repo's extended template
+- Preserve `### Misc` exactly as written as the final subsection when the changelog uses the repo's extended template
 
 Example release body extracted from `CHANGELOG.md`:
 
@@ -197,11 +197,11 @@ Example release body extracted from `CHANGELOG.md`:
 ### Added
 - Support release digests
 
-### Misc
-- Refactor changelog parsing for prerelease note generation
-
 ### Fixed
 - Correct changelog parsing for empty sections
+
+### Misc
+- Refactor changelog parsing for prerelease note generation
 ```
 
 Normalize the release version to a tag value:
@@ -421,20 +421,20 @@ Given this changelog excerpt:
 
 ### Fixed
 
-### Misc
-
 ### Security
+
+### Misc
 
 ## [v0.5.0] - 2026-03-20
 
 ### Added
 - Add `gh-release` skill for annotated tags and GitHub prereleases
 
-### Misc
-- Refactor release note assembly for changelog subsection passthrough
-
 ### Fixed
 - Preserve changelog subsection order in generated release notes
+
+### Misc
+- Refactor release note assembly for changelog subsection passthrough
 
 ## [v0.4.0] - 2026-03-10
 
@@ -448,11 +448,11 @@ Publish `v0.5.0` with notes body:
 ### Added
 - Add `gh-release` skill for annotated tags and GitHub prereleases
 
-### Misc
-- Refactor release note assembly for changelog subsection passthrough
-
 ### Fixed
 - Preserve changelog subsection order in generated release notes
+
+### Misc
+- Refactor release note assembly for changelog subsection passthrough
 
 ## Full Changelog
 https://github.com/OWNER/REPO/compare/v0.4.0...v0.5.0
@@ -510,14 +510,14 @@ https://github.com/OWNER/REPO/compare/v0.4.0...v0.5.0
 
 5. **Build notes body:**
    ```markdown
-   ### Added
-   - Add `gh-release` skill for annotated tags and GitHub prereleases
+    ### Added
+    - Add `gh-release` skill for annotated tags and GitHub prereleases
+
+    ### Fixed
+    - Preserve changelog subsection order in generated release notes
 
     ### Misc
     - Refactor release note assembly for changelog subsection passthrough
-
-   ### Fixed
-   - Preserve changelog subsection order in generated release notes
 
    ## Full Changelog
    https://github.com/OWNER/REPO/compare/v0.4.0...v0.5.0
@@ -525,21 +525,21 @@ https://github.com/OWNER/REPO/compare/v0.4.0...v0.5.0
 
 6. **Write notes, push tag, and create prerelease:**
    ```bash
-   notes_file="$(mktemp)"
+    notes_file="$(mktemp)"
 
     cat > "$notes_file" <<'EOF'
     ### Added
     - Add `gh-release` skill for annotated tags and GitHub prereleases
 
-    ### Misc
-    - Refactor release note assembly for changelog subsection passthrough
-
     ### Fixed
     - Preserve changelog subsection order in generated release notes
 
-   ## Full Changelog
-   https://github.com/OWNER/REPO/compare/v0.4.0...v0.5.0
-   EOF
+    ### Misc
+    - Refactor release note assembly for changelog subsection passthrough
+
+    ## Full Changelog
+    https://github.com/OWNER/REPO/compare/v0.4.0...v0.5.0
+    EOF
 
    git tag -a "v0.5.0" -m "Release v0.5.0"
    git push origin "v0.5.0"
