@@ -13,8 +13,9 @@ metadata:
 
 - Create initial CHANGELOG.md file using Keep a Changelog format
 - Extract up to 10 major features from README.md, commit history, and codebase structure
-- Place all features under [Unreleased] section (no version number yet)
-- Include empty sections for Changed, Deprecated, Removed, Fixed, and Security
+- Place all extracted entries under [Unreleased] section (no version number yet)
+- Classify entries into Added or Misc based on whether they describe new capabilities or notable catch-all code changes
+- Include empty sections for Changed, Deprecated, Removed, Fixed, Security, and Misc
 - Note adherence to Semantic Versioning for future releases
 - Notify if additional important features exist beyond the top 10
 - Provide guidance on moving to versioned releases later
@@ -104,20 +105,21 @@ If found, read README.md using Read tool and parse for:
 - Bullet lists describing functionality
 - High-level feature descriptions
 
-**3b. Analyze all commits on main/master:**
+**3b. Analyze first-parent history on main/master:**
 ```bash
-# Get all commits from default branch
-git log origin/main --oneline --no-merges
+# Get first-parent commits from default branch
+git log origin/main --first-parent --oneline
 # or
-git log origin/master --oneline --no-merges
+git log origin/master --first-parent --oneline
 ```
 
-Apply smart filtering to identify feature-related commits:
+Apply smart filtering to identify Added and Misc candidates:
 
 **Include commits with:**
 - `feat:`, `feature:`, `add:`, `added:`, `implement:`, `create:`
 - Keywords: "api", "database", "auth", "cli", "ui", "backend", "frontend", "dashboard", "integration"
 - `refactor:` only if mentions major component (e.g., "refactor: migrate to TypeScript")
+- Descriptive squash-merge or PR titles that indicate code or logic changes not already covered by standard sections
 
 **Exclude commits with:**
 - `docs:`, `doc:`, `documentation:`
@@ -126,6 +128,7 @@ Apply smart filtering to identify feature-related commits:
 - Version-related: "bump", "release", "version"
 - Dependencies: "update deps", "upgrade", "npm update", "yarn upgrade"
 - Trivial changes: "fix typo", "update readme", "add comment", "format code"
+- Generic merge subjects with no useful description (e.g., "Merge pull request #123 ...")
 
 **3c. Scan project structure:**
 ```bash
@@ -142,7 +145,7 @@ Look for directories indicating major features:
 - `auth/` → Authentication system
 - `docs/` → Documentation (only mention if substantial)
 
-### Step 4: Extract and Rank Features
+### Step 4: Extract, Classify, and Rank Entries
 
 **Priority ranking (highest to lowest):**
 1. Explicit features from README.md sections
@@ -156,7 +159,13 @@ Look for directories indicating major features:
 - Group related commits
   - Example: "Add JWT auth", "Add login endpoint", "Add user sessions" → "Authentication system with JWT"
 
-**Feature formatting:**
+**Section classification rules:**
+- `### Added` → new features, new subsystems, first-time integrations, or newly introduced user-facing capabilities
+- `### Misc` → notable merged PRs or source-code / program-logic changes that affect behavior, architecture, or maintainability but do not cleanly fit `Added`, `Changed`, `Fixed`, `Removed`, `Deprecated`, or `Security`
+- Do not place docs-only, formatting-only, CI-only, or dependency-only work into `Misc`
+- When unsure between `Added` and `Misc`, prefer `Added` only for clearly new capabilities; otherwise use `Misc`
+
+**Entry formatting:**
 - Convert to past tense if needed
 - Start with capital letter
 - Concise: 50-80 characters max
@@ -179,6 +188,8 @@ Look for directories indicating major features:
 - If more than 10 candidates found:
   - Keep top 10 in CHANGELOG
   - Note 2-3 examples of additional features for user review
+
+Balance the selected entries across `### Added` and `### Misc` based on classification. `### Misc` may remain empty if no suitable catch-all code changes are found.
 
 ### Step 5: Generate CHANGELOG.md
 
@@ -207,6 +218,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+### Misc
+
 ### Deprecated
 
 ### Removed
@@ -219,8 +232,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 **Rules:**
 - All features go under `## [Unreleased]` section
 - No version number or date yet
-- Keep empty sections (Changed, Deprecated, Removed, Fixed, Security) present
-- Features listed in `### Added` section with `- ` bullet format
+- Keep empty sections (Changed, Misc, Deprecated, Removed, Fixed, Security) present
+- Place each extracted entry in either `### Added` or `### Misc` with `- ` bullet format
+- Use `### Misc` only for notable code or logic changes and merged PRs that do not fit the standard Keep a Changelog sections
 
 ### Step 6: Write CHANGELOG.md
 
@@ -233,8 +247,9 @@ Use the Write tool to create the file at project root:
 
 **Standard success message:**
 ```
-✓ Created CHANGELOG.md with [N] features under [Unreleased]
+✓ Created CHANGELOG.md with [N] entries under [Unreleased]
   - File location: CHANGELOG.md
+  - Included `### Misc` for notable code changes that do not fit standard Keep a Changelog sections
   - Future versions will follow Semantic Versioning
 
 Next steps:
@@ -245,8 +260,8 @@ Next steps:
 
 **With overflow notification (>10 features found):**
 ```
-✓ Created CHANGELOG.md with 10 features under [Unreleased]
-  - Note: Found [X] additional potential features. Consider reviewing commits for:
+✓ Created CHANGELOG.md with 10 entries under [Unreleased]
+  - Note: Found [X] additional potential entries. Consider reviewing commits for:
     • [Feature example 1]
     • [Feature example 2]
     • [Feature example 3]
@@ -259,8 +274,8 @@ Next steps:
 
 **Low feature count (0-2 features):**
 ```
-✓ Created CHANGELOG.md with [N] feature(s) under [Unreleased]
-  - Note: Limited features detected from project analysis. You may want to manually edit CHANGELOG.md to add more details.
+✓ Created CHANGELOG.md with [N] entr(y/ies) under [Unreleased]
+  - Note: Limited entries detected from project analysis. You may want to manually edit CHANGELOG.md to add more details.
 
 Next steps:
   - Review CHANGELOG.md and add missing features
@@ -299,6 +314,7 @@ Extract bullet points or numbered lists from these sections. Each item becomes a
 - Group commits by topic (e.g., all auth-related commits → single "Authentication system" feature)
 - Ignore micro-commits (e.g., "fix lint error", "remove console.log")
 - Prioritize commits near repository start (foundational features)
+- Treat descriptive squash-merge titles as valid candidates for `### Misc` when they represent notable source changes without a cleaner standard section
 
 ### Directory Structure Inference
 
@@ -322,12 +338,12 @@ Map directories to feature descriptions:
 | Not a git repository | Error: "This skill requires a git repository for context gathering." |
 | No main or master branch | Error: "No main or master branch found. Please create a default branch first." |
 | README.md not found | Proceed with commits + directory structure analysis only |
-| No commits on main/master | Use directory structure + notify: "No commit history found. Created minimal CHANGELOG.md based on project structure. Please edit manually to add features." |
+| No commits on main/master | Use directory structure + notify: "No commit history found. Created minimal CHANGELOG.md based on project structure. Please edit manually to add entries." |
 | Empty repository (no files) | Notify: "Empty repository detected. Created template CHANGELOG.md with no features. Please edit manually." |
-| 0 features extracted | Create CHANGELOG with empty Added section + notify: "No features detected. Please manually edit CHANGELOG.md to add your project's features." |
-| 1-2 features extracted | Include all + notify: "Limited features detected. You may want to manually edit CHANGELOG.md to add more details." |
-| Exactly 10 features | Include all, no overflow notification |
-| More than 10 features | Include top 10 + notify with 2-3 examples of additional features |
+| 0 entries extracted | Create CHANGELOG with empty Added and Misc sections + notify: "No notable code changes detected. Please manually edit CHANGELOG.md to add your project's entries." |
+| 1-2 entries extracted | Include all + notify: "Limited entries detected. You may want to manually edit CHANGELOG.md to add more details." |
+| Exactly 10 entries | Include all, no overflow notification |
+| More than 10 entries | Include top 10 + notify with 2-3 examples of additional entries |
 
 ## Complete Workflow Example
 
@@ -358,10 +374,10 @@ Map directories to feature descriptions:
      - Docker deployment
      - CI/CD with GitHub Actions
 
-4. **Commit analysis (150 commits):**
-   - Filter to 42 feature-related commits
-   - Grouped into topics:
-     - Authentication (8 commits) → "Authentication system with JWT and OAuth"
+4. **Commit analysis (150 first-parent commits):**
+    - Filter to 42 feature-related commits
+    - Grouped into topics:
+      - Authentication (8 commits) → "Authentication system with JWT and OAuth"
      - API (15 commits) → "RESTful API with OpenAPI documentation"
      - Database (6 commits) → "PostgreSQL database with Prisma ORM"
      - Frontend (10 commits) → "React-based web interface with Material-UI"
@@ -380,26 +396,26 @@ Map directories to feature descriptions:
    db/       → Database migrations
    ```
 
-6. **Feature ranking and selection:**
-   - Deduplicated and merged sources
-   - Top 10 selected:
-     1. Authentication system with JWT and OAuth
-     2. RESTful API with OpenAPI documentation
-     3. PostgreSQL database with Prisma ORM
-     4. React-based web interface with Material-UI
-     5. Real-time notifications via WebSocket
-     6. Docker containerization and Kubernetes deployment
-     7. CI/CD pipeline with GitHub Actions
-     8. Comprehensive test suite with Jest and Cypress
-     9. Application monitoring with Prometheus
-     10. Role-based access control (RBAC)
+6. **Entry ranking and selection:**
+    - Deduplicated and merged sources
+    - Top 10 selected:
+      1. Authentication system with JWT and OAuth
+      2. RESTful API with OpenAPI documentation
+      3. PostgreSQL database with Prisma ORM
+      4. React-based web interface with Material-UI
+      5. Real-time notifications via WebSocket
+      6. Docker containerization and Kubernetes deployment
+      7. CI/CD pipeline with GitHub Actions
+      8. Comprehensive test suite with Jest and Cypress
+      9. Application monitoring with Prometheus
+      10. Major internal permissions refactor (Misc)
 
 7. **Overflow detection:**
    - Found 2 additional features:
      - Email notification system
      - API rate limiting
 
-8. **Write CHANGELOG.md** with selected features
+8. **Write CHANGELOG.md** with selected entries split between `### Added` and `### Misc`
 
 9. **User notification:**
    ```
