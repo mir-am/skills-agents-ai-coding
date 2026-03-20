@@ -63,6 +63,11 @@ Review a GitHub Pull Request using gh CLI and provide structured feedback. Fetch
 
 **Requirements:** git, GitHub CLI (`gh`)
 
+### gh-release
+Create an annotated git tag and GitHub prerelease from the latest versioned `CHANGELOG.md` entry. Uses the newest versioned section below `[Unreleased]` as the release notes source and appends a full changelog compare link.
+
+**Requirements:** git, GitHub CLI (`gh`)
+
 ### gh-cr-submit
 Submit AI-generated code review from `.opencode/review/` to GitHub PR. Validates branch matching, handles forks, allows the user to choose from multiple reviews, and adds an AI-generated warning header before submission.
 
