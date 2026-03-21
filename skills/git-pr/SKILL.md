@@ -17,6 +17,7 @@ metadata:
 - Create concise PR description with summary and 3-5 key changes
 - Link GitHub issue if working on one in current session
 - Create GitHub PR using `gh` CLI and self-assign it to the authenticated GitHub user
+- Update root `CHANGELOG.md` when present with one PR-linked unreleased bullet
 
 ## When to use me
 
@@ -104,7 +105,47 @@ gh pr create --base <master-or-main> --assignee @me --title "<title>" --body "<d
 
 - If working on an issue, append `Closes #<issue-number>` to the description
 - Always include `--assignee @me` so the PR is assigned to the signed-in `gh` user
+- Capture the created PR number and URL for any follow-up changelog sync
 - Return the PR URL to the user
+
+## CHANGELOG.md Sync
+
+After the PR is created, optionally sync the repository root `CHANGELOG.md`.
+
+### When to sync
+
+- Only if `CHANGELOG.md` exists at the repository root
+- Only if `## [Unreleased]` exists exactly once
+- Only if the unreleased section already contains the target subsection heading
+- If any of the above checks fail, skip changelog editing without failing PR creation
+
+### Changelog Entry Format
+
+- Write exactly one bullet for the PR in this format:
+  ```markdown
+  - <high-level PR summary> (#<pr-number>)
+  ```
+- Keep it to one line
+- Use changelog-style wording, not PR-body wording
+- Focus on the high-level thing the PR does, not an implementation checklist
+
+### Section Selection
+
+Choose the best matching subsection under `## [Unreleased]` based on the PR's high-level purpose:
+
+- `### Added` for new user-facing capabilities or first-time integrations
+- `### Changed` for meaningful behavior changes or enhancements to existing functionality
+- `### Fixed` for user-visible bug fixes
+- `### Deprecated`, `### Removed`, or `### Security` when clearly applicable
+- `### Misc` only when the PR is notable but does not fit the standard Keep a Changelog sections
+
+### Update Rules
+
+- Treat changelog state as one PR = one bullet
+- If a bullet ending with `(#<pr-number>)` already exists, update that line instead of appending a second one
+- If the PR's high-level purpose is now better represented by a different subsection, move the bullet to that subsection
+- Never create duplicate bullets for the same PR number
+- If multiple matching `(#<pr-number>)` bullets already exist, treat the changelog as ambiguous and skip editing
 
 ## Error Handling
 
@@ -113,3 +154,4 @@ gh pr create --base <master-or-main> --assignee @me --title "<title>" --body "<d
 - `gh` not installed → "Error: GitHub CLI not found. Install: https://cli.github.com/"
 - `gh` not authenticated / `gh auth status` fails → "Error: GitHub CLI not authenticated. Run: gh auth login"
 - Self-assignment fails (for example, assignees unsupported or user not assignable) → surface the `gh` error clearly and do not claim the PR was self-assigned
+- `CHANGELOG.md` missing, malformed, or missing the needed unreleased subsection → skip changelog sync and continue
