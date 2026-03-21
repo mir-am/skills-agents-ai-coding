@@ -53,7 +53,7 @@ Each skill is a **directory** under `skills/` containing a `SKILL.md` file.
    ---
    ```
 
-   Non-OpenCode sync targets receive transformed copies of this source file. `ghc` and `cc` installs strip repo-specific metadata fields and rewrite workspace paths for their target environment.
+   Non-OpenCode sync targets receive transformed copies of this source file. Installs for `ghc` and `cc` strip repo-specific metadata fields and rewrite workspace paths for their target environment.
 
 2. **Markdown body** with structured sections:
    - `## What I do` - Bullet list of capabilities
