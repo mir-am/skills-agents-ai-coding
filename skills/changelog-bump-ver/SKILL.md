@@ -13,7 +13,7 @@ metadata:
 
 - Promote `## [Unreleased]` entries in `CHANGELOG.md` into a new versioned release section
 - Create a fresh empty `## [Unreleased]` section above the new release
-- Preserve Keep a Changelog structure with empty `Added`, `Changed`, `Deprecated`, `Removed`, `Fixed`, and `Security` subsections
+- Preserve Keep a Changelog structure with empty `Added`, `Changed`, `Deprecated`, `Removed`, `Fixed`, and `Security` subsections, and include `Misc` at the end for this repo's extended template
 - Determine the next version using the user's requested bump method when provided
 - Otherwise infer the current bump method from existing changelog history and fall back to `minor` when history is insufficient or unclear
 - Use the current system date from `date +%F` in the new release heading
@@ -167,6 +167,7 @@ Rules:
 - Preserve all existing unreleased notes exactly
 - Keep subsection order as found within the promoted release content
 - Do not silently discard unknown subsections
+- Preserve `### Misc` exactly like the standard subsections when present
 - If the unreleased section is empty, allow the release but warn the user
 
 ### Step 7: Rewrite CHANGELOG.md
@@ -196,12 +197,15 @@ Fresh unreleased template:
 ### Fixed
 
 ### Security
+
+### Misc
 ```
 
 Rules:
 - The new empty unreleased section must appear directly above the new release
 - The new release heading must always include the date from `date +%F`
 - If the promoted unreleased content did not contain one of the standard subsections, do not invent release notes; just move what existed
+- For this repo's extended template, keep `### Misc` as the last subsection in both the promoted release content and the refreshed empty unreleased template
 - Keep surrounding whitespace tidy and consistent
 
 ### Step 8: Update Maven `pom.xml` Files
@@ -246,7 +250,7 @@ Report:
 ```
 ✓ Released CHANGELOG.md as [v0.3.0] - 2026-03-19
   - Bump method: minor (inferred from existing history)
-  - Added fresh empty [Unreleased] section
+  - Added fresh empty [Unreleased] section including `### Misc`
   - Updated Maven project version in:
     - pom.xml
     - modules/api/pom.xml
@@ -258,7 +262,7 @@ Report:
 ```
 ✓ Released CHANGELOG.md as [v0.1.0] - 2026-03-19
   - Bump method: minor (fallback default; no prior version history)
-  - Added fresh empty [Unreleased] section
+  - Added fresh empty [Unreleased] section including `### Misc`
   - Updated Maven project version in:
     - pom.xml
 ```
@@ -268,7 +272,7 @@ Report:
 ✓ Released CHANGELOG.md as [v0.3.0] - 2026-03-19
   - Bump method: minor (explicit user request)
   - Note: [Unreleased] was empty
-  - Added fresh empty [Unreleased] section
+  - Added fresh empty [Unreleased] section including `### Misc`
   - No pom.xml files required updates
 ```
 
@@ -323,6 +327,8 @@ When multiple valid version headings exist:
 
 ### Security
 
+### Misc
+
 ## [v0.3.0] - 2026-03-19
 
 ### Added
@@ -330,6 +336,11 @@ When multiple valid version headings exist:
 
 ### Fixed
 - Resolve session timeout bug
+
+### Security
+
+### Misc
+- Refactor access-control evaluation flow
 
 ## [v0.2.0] - 2026-02-10
 
@@ -383,6 +394,7 @@ Do not change these automatically:
 | Latest version transition is unclear | Fallback bump method is `minor` |
 | User explicitly requests `major`, `minor`, or `patch` | Use the explicit request even if it differs from history |
 | Unreleased section is empty | Create release anyway, but notify the user |
+| Unreleased section contains `### Misc` | Preserve it under the new release and recreate it in the fresh empty `[Unreleased]` template |
 | Unreleased section contains nonstandard subsections | Preserve them under the new release |
 | Mixed `v` and non-`v` release headings | Normalize only the new release heading to `vX.Y.Z` |
 | `pom.xml` has direct project version | Update it |
@@ -419,7 +431,7 @@ Do not change these automatically:
    - Next version: `0.3.0`
 
 6. **Rewrite changelog:**
-   - Create fresh empty `## [Unreleased]`
+   - Create fresh empty `## [Unreleased]` including `### Misc`
    - Promote current unreleased notes into `## [v0.3.0] - 2026-03-19`
    - Preserve prior entries below
 
@@ -431,7 +443,7 @@ Do not change these automatically:
    ```
    ✓ Released CHANGELOG.md as [v0.3.0] - 2026-03-19
      - Bump method: minor (inferred from existing history)
-     - Added fresh empty [Unreleased] section
+     - Added fresh empty [Unreleased] section including `### Misc`
      - Updated Maven project version in:
        - pom.xml
      - Skipped inherited-version POMs:

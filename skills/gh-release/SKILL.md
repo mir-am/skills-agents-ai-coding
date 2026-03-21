@@ -15,6 +15,7 @@ metadata:
 - Create a GitHub prerelease with notes copied from that same changelog entry
 - Treat the first versioned section below `## [Unreleased]` as the release to publish
 - Preserve the release section subsections and bullets exactly as written in the changelog
+- Preserve the repo's `### Misc` subsection at the end of release notes when present
 - Append a `## Full Changelog` section that compares the previous release to the new tag
 - Handle first-release repositories by comparing the default branch's first commit to the new release tag
 
@@ -188,6 +189,7 @@ Rules:
 - Keep blank lines and subsection order intact
 - Do not invent missing `Added`, `Changed`, `Fixed`, or other subsections
 - Allow nonstandard subsections and keep them unchanged
+- Preserve `### Misc` exactly as written as the final subsection when the changelog uses the repo's extended template
 
 Example release body extracted from `CHANGELOG.md`:
 
@@ -197,6 +199,9 @@ Example release body extracted from `CHANGELOG.md`:
 
 ### Fixed
 - Correct changelog parsing for empty sections
+
+### Misc
+- Refactor changelog parsing for prerelease note generation
 ```
 
 Normalize the release version to a tag value:
@@ -287,6 +292,9 @@ notes_file="$(mktemp)"
 cat > "$notes_file" <<'EOF'
 ### Added
 - Example release note
+
+### Misc
+- Example internal refactor note
 
 ## Full Changelog
 https://github.com/OWNER/REPO/compare/v0.4.0...v0.5.0
@@ -415,6 +423,8 @@ Given this changelog excerpt:
 
 ### Security
 
+### Misc
+
 ## [v0.5.0] - 2026-03-20
 
 ### Added
@@ -422,6 +432,9 @@ Given this changelog excerpt:
 
 ### Fixed
 - Preserve changelog subsection order in generated release notes
+
+### Misc
+- Refactor release note assembly for changelog subsection passthrough
 
 ## [v0.4.0] - 2026-03-10
 
@@ -437,6 +450,9 @@ Publish `v0.5.0` with notes body:
 
 ### Fixed
 - Preserve changelog subsection order in generated release notes
+
+### Misc
+- Refactor release note assembly for changelog subsection passthrough
 
 ## Full Changelog
 https://github.com/OWNER/REPO/compare/v0.4.0...v0.5.0
@@ -460,6 +476,7 @@ https://github.com/OWNER/REPO/compare/v0.4.0...v0.5.0
 | Annotated tag was created locally but not pushed | Push and verify the tag on `origin` before creating the release |
 | First release with no older version heading | Compare first commit on default branch to new tag |
 | First release with a single commit | Compare that same first commit to the new tag |
+| Release section contains `### Misc` | Preserve it unchanged in the generated notes body |
 | `gh release create` fails after tag creation | Report partial failure and note that the local tag now exists |
 
 ## Complete Workflow Example
@@ -493,11 +510,14 @@ https://github.com/OWNER/REPO/compare/v0.4.0...v0.5.0
 
 5. **Build notes body:**
    ```markdown
-   ### Added
-   - Add `gh-release` skill for annotated tags and GitHub prereleases
+    ### Added
+    - Add `gh-release` skill for annotated tags and GitHub prereleases
 
-   ### Fixed
-   - Preserve changelog subsection order in generated release notes
+    ### Fixed
+    - Preserve changelog subsection order in generated release notes
+
+    ### Misc
+    - Refactor release note assembly for changelog subsection passthrough
 
    ## Full Changelog
    https://github.com/OWNER/REPO/compare/v0.4.0...v0.5.0
@@ -505,18 +525,21 @@ https://github.com/OWNER/REPO/compare/v0.4.0...v0.5.0
 
 6. **Write notes, push tag, and create prerelease:**
    ```bash
-   notes_file="$(mktemp)"
+    notes_file="$(mktemp)"
 
-   cat > "$notes_file" <<'EOF'
-   ### Added
-   - Add `gh-release` skill for annotated tags and GitHub prereleases
+    cat > "$notes_file" <<'EOF'
+    ### Added
+    - Add `gh-release` skill for annotated tags and GitHub prereleases
 
-   ### Fixed
-   - Preserve changelog subsection order in generated release notes
+    ### Fixed
+    - Preserve changelog subsection order in generated release notes
 
-   ## Full Changelog
-   https://github.com/OWNER/REPO/compare/v0.4.0...v0.5.0
-   EOF
+    ### Misc
+    - Refactor release note assembly for changelog subsection passthrough
+
+    ## Full Changelog
+    https://github.com/OWNER/REPO/compare/v0.4.0...v0.5.0
+    EOF
 
    git tag -a "v0.5.0" -m "Release v0.5.0"
    git push origin "v0.5.0"
