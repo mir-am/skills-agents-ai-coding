@@ -107,6 +107,7 @@ Reviews feature branch diffs for quality, bugs, performance, and security. Write
 ## Requirements
 
 - rsync (for sync script)
+- python3 (required when syncing non-OpenCode targets: `ghc` and `cc`)
 
 ## Usage
 
@@ -168,6 +169,7 @@ The script will:
 - Install new skills that don't exist in the selected target skills directory
 - Install new OpenCode agents that don't exist in `~/.config/opencode/agents/`
 - Update existing skills/agents if the repository version is different
+- Use `python3` to prepare non-OpenCode skill copies before install by stripping extra frontmatter and rewriting workspace paths
 - Rewrite skill workspace paths from `.opencode/...` to `.copilot/...` when syncing to `ghc`
 - Rewrite skill workspace paths from `.opencode/...` to `.claude/...` when syncing to `cc`
 - Skip items that are already up-to-date
