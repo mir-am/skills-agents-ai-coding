@@ -39,7 +39,7 @@ opencode-skills/
 
 Each skill is a **directory** under `skills/` containing a `SKILL.md` file.
 
-1. **YAML frontmatter** with metadata:
+1. **YAML frontmatter** with metadata in the repository source format:
    ```yaml
    ---
    name: <skill-name>
@@ -52,6 +52,8 @@ Each skill is a **directory** under `skills/` containing a `SKILL.md` file.
      category: <category>
    ---
    ```
+
+   Non-OpenCode sync targets receive transformed copies of this source file. `ghc` and `cc` installs strip repo-specific metadata fields and rewrite workspace paths for their target environment.
 
 2. **Markdown body** with structured sections:
    - `## What I do` - Bullet list of capabilities
@@ -98,6 +100,7 @@ Each agent is a **single `.md` file** in the `agents/` directory. The filename (
 - Skills and agents are self-contained; all instructions live in their markdown file
 - Commands should use `bash` code blocks with exact syntax
 - Skills use the open Agent Skills format and can be synced to supported CLIs
+- Source skills are authored once under `skills/`; `sync.sh` may rewrite copies for non-OpenCode targets during installation
 - Agents target the OpenCode agent runtime and its tool set (Bash, Read, Write, Edit, Glob, Grep, etc.)
 - Some GitHub-focused skills may combine official API flows with clearly labeled best-effort prompt/comment flows when GitHub features are partially exposed through `gh`
 - Never commit directly on `main` or `master`; create or switch to a feature branch first
@@ -107,10 +110,12 @@ Each agent is a **single `.md` file** in the `agents/` directory. The filename (
 
 The sync script installs skills and agents from this repo to supported target CLIs. It:
 - Defaults to the `oc` target when no CLI argument is provided
-- Accepts `oc` and `ghc` as target arguments, plus `--sync-all` to sync all supported targets
+- Accepts `oc`, `ghc`, and `cc` as target arguments, plus `--sync-all` to sync all supported targets
 - Syncs skills (directories) to `~/.config/opencode/skills/` for `oc` using `rsync`
 - Syncs skills (directories) to `~/.copilot/skills/` for `ghc` using `rsync`
+- Syncs skills (directories) to `~/.claude/skills/` for `cc` using `rsync`
 - Rewrites skill-instruction workspace paths from `.opencode/` to `.copilot/` during `ghc` sync
+- Rewrites skill-instruction workspace paths from `.opencode/` to `.claude/` during `cc` sync
 - Syncs agents (flat `.md` files) to `~/.config/opencode/agents/` for `oc` using `cp`
 - Creates target skills directories if they do not exist
 - Compares hashes (md5sum) to detect changes
