@@ -135,17 +135,19 @@ Choose the best matching subsection under `## [Unreleased]` based on the PR's hi
 
 - `### Added` for new user-facing capabilities or first-time integrations
 - `### Changed` for meaningful behavior changes or enhancements to existing functionality
+- `### Deprecated` when marking functionality as discouraged but still available
+- `### Removed` when functionality is no longer available to users
 - `### Fixed` for user-visible bug fixes
-- `### Deprecated`, `### Removed`, or `### Security` when clearly applicable
+- `### Security` for security-relevant fixes or improvements
 - `### Misc` only when the PR is notable but does not fit the standard Keep a Changelog sections
 
 ### Update Rules
 
 - Treat changelog state as one PR = one bullet
-- If a bullet ending with `(#<pr-number>)` already exists, update that line instead of appending a second one
-- If the PR's high-level purpose is now better represented by a different subsection, move the bullet to that subsection
-- Never create duplicate bullets for the same PR number
-- If multiple matching `(#<pr-number>)` bullets already exist, treat the changelog as ambiguous and skip editing
+- Within the `## [Unreleased]` section, if a bullet ending with `(#<pr-number>)` already exists, update that line instead of appending a second one
+- Only move bullets within the `## [Unreleased]` section (between its subsections) when the PR's high-level purpose is better represented elsewhere
+- Never create duplicate bullets for the same PR number within `## [Unreleased]`
+- If multiple matching `(#<pr-number>)` bullets exist within `## [Unreleased]`, or if matching bullets are found only outside `## [Unreleased]`, treat the changelog as ambiguous and skip editing
 
 ## Error Handling
 

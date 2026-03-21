@@ -131,7 +131,7 @@ Preserve the existing structure from the `git-pr` skill:
 Only reach this step if an open PR exists for the current branch and the push materially changes what the PR delivers.
 
 1. Check whether root `CHANGELOG.md` exists and contains exactly one `## [Unreleased]` section
-2. Find the existing changelog bullet ending with `(#<pr-number>)`
+2. Within the `## [Unreleased]` section, find the existing changelog bullet ending with `(#<pr-number>)`
 3. Re-evaluate the PR's high-level purpose after the push
 4. Update that one-line bullet only if the old wording no longer reflects the PR's overall scope
 5. If the best matching changelog subsection changed, move the bullet to the better subsection
@@ -140,7 +140,7 @@ Rules:
 
 - Do not touch `CHANGELOG.md` if there is no open PR in the current agent context or no open PR for the branch
 - Do not create a new changelog bullet from `git-push`; this skill only updates an existing PR-linked bullet
-- Reuse the same high-level classification rules as `git-pr`: `Added`, `Changed`, `Fixed`, `Deprecated`, `Removed`, `Security`, then `Misc` if none fit well
+- Reuse the same high-level classification rules as `git-pr`: `Added`, `Changed`, `Deprecated`, `Removed`, `Fixed`, `Security`, then `Misc` if none fit well
 - Only move the bullet if the newly selected subsection already exists under `## [Unreleased]`; otherwise skip changelog editing
 - Keep the changelog entry in this format:
   ```markdown
