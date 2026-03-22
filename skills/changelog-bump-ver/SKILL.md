@@ -456,8 +456,8 @@ Do not change these automatically:
     - Preserve prior entries below
 
 8. **Update Maven versions:**
-   - `pom.xml` direct project version `0.2.0-SNAPSHOT` -> `0.4.0-SNAPSHOT`
-    - `modules/core/pom.xml` has no direct project version -> skipped
+   - `pom.xml` direct project version `0.3.0-SNAPSHOT` -> `0.4.0-SNAPSHOT`
+   - `modules/core/pom.xml` has no direct project version -> skipped
 
 9. **Notify the user:**
    ```
