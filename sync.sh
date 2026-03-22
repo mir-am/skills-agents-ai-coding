@@ -34,13 +34,13 @@ fi
 
 # Helper function: usage
 usage() {
-  echo "Usage: $0 [oc|ghc] [--dry-run] [--sync-all]"
+  echo "Usage: $0 [oc|ghc|cc] [--dry-run] [--sync-all]"
 }
 
 # Parse arguments
 while [[ $# -gt 0 ]]; do
   case $1 in
-    oc|ghc)
+    oc|ghc|cc)
       if [ "$SYNC_ALL" = true ]; then
         echo "Cannot combine target '$1' with --sync-all"
         usage
@@ -86,6 +86,9 @@ get_skills_target_dir() {
     ghc)
       echo "$HOME/.copilot/skills"
       ;;
+    cc)
+      echo "$HOME/.claude/skills"
+      ;;
     *)
       echo "Unsupported target: $target" >&2
       exit 1
@@ -130,15 +133,20 @@ prepare_skill_source_dir() {
   mkdir -p "$prepared_path"
   rsync -a "$source_path/" "$prepared_path/"
 
-  python3 - "$prepared_path" <<'PY'
+  python3 - "$prepared_path" "$target" <<'PY'
 import os
 import sys
 
 root = sys.argv[1]
+target = sys.argv[2]
 text_extensions = {".md", ".yaml", ".yml"}
+path_replacements = {
+    "ghc": (".opencode/", ".copilot/"),
+    "cc": (".opencode/", ".claude/"),
+}
 
 
-def strip_ghc_frontmatter(text):
+def strip_target_frontmatter(text):
     lines = text.splitlines(keepends=True)
     if len(lines) < 3 or lines[0].strip() != "---":
         return text
@@ -177,6 +185,7 @@ def strip_ghc_frontmatter(text):
 
     return "".join([lines[0], *rewritten, *body])
 
+
 for dirpath, _, filenames in os.walk(root):
     for filename in filenames:
         _, extension = os.path.splitext(filename)
@@ -192,9 +201,10 @@ for dirpath, _, filenames in os.walk(root):
 
         content = original_content
         if filename == "SKILL.md":
-            content = strip_ghc_frontmatter(content)
+            content = strip_target_frontmatter(content)
 
-        rewritten = content.replace(".opencode/", ".copilot/")
+        from_text, to_text = path_replacements.get(target, ("", ""))
+        rewritten = content.replace(from_text, to_text) if from_text else content
         if rewritten != original_content:
             with open(path, "w", encoding="utf-8") as fh:
                 fh.write(rewritten)
@@ -387,9 +397,9 @@ sync_target() {
     else
       echo -e "${GREEN}Agents:${RESET} $agents_installed installed, $agents_updated updated, $agents_unchanged up-to-date"
     fi
-  elif [ "$target" = "ghc" ]; then
+  elif [ "$target" != "oc" ]; then
     echo ""
-    echo -e "${GRAY}Note:${RESET} Agent sync is only supported for oc; skipping agents for ghc"
+    echo -e "${GRAY}Note:${RESET} Agent sync is only supported for oc; skipping agents for $target"
   fi
 }
 
@@ -407,6 +417,8 @@ if [ "$SYNC_ALL" = true ]; then
   sync_target "oc"
   echo ""
   sync_target "ghc"
+  echo ""
+  sync_target "cc"
 else
   sync_target "$TARGET_PROGRAM"
 fi

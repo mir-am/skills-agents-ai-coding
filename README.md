@@ -6,10 +6,14 @@ This repository stores skills in the open Agent Skills format and supports synci
 
 - OpenCode (`oc`)
 - GitHub Copilot CLI (`ghc`)
+- Claude Code (`cc`)
 
 It also includes OpenCode-specific agents in `agents/`.
 
-Skill source files in this repository keep OpenCode-style workspace paths like `.opencode/...`. During `ghc` sync, `sync.sh` rewrites those skill instructions to `.copilot/...` before installing them.
+Skill source files in this repository keep OpenCode-style workspace paths like `.opencode/...`. During target-specific sync, `sync.sh` rewrites those skill instructions before installing them:
+
+- `ghc` sync rewrites `.opencode/...` to `.copilot/...`
+- `cc` sync rewrites `.opencode/...` to `.claude/...`
 
 ## Available Skills
 
@@ -103,6 +107,7 @@ Reviews feature branch diffs for quality, bugs, performance, and security. Write
 ## Requirements
 
 - rsync (for sync script)
+- python3 (required when syncing non-OpenCode targets: `ghc` and `cc`)
 
 ## Usage
 
@@ -124,6 +129,12 @@ Sync skills to GitHub Copilot CLI:
 ./sync.sh ghc
 ```
 
+Sync skills to Claude Code:
+
+```bash
+./sync.sh cc
+```
+
 Sync all supported targets:
 
 ```bash
@@ -142,6 +153,12 @@ Preview a GitHub Copilot CLI sync without applying changes:
 ./sync.sh ghc --dry-run
 ```
 
+Preview a Claude Code sync without applying changes:
+
+```bash
+./sync.sh cc --dry-run
+```
+
 Preview all supported targets without applying changes:
 
 ```bash
@@ -152,7 +169,9 @@ The script will:
 - Install new skills that don't exist in the selected target skills directory
 - Install new OpenCode agents that don't exist in `~/.config/opencode/agents/`
 - Update existing skills/agents if the repository version is different
+- Use `python3` to prepare non-OpenCode skill copies before install by stripping extra frontmatter and rewriting workspace paths
 - Rewrite skill workspace paths from `.opencode/...` to `.copilot/...` when syncing to `ghc`
+- Rewrite skill workspace paths from `.opencode/...` to `.claude/...` when syncing to `cc`
 - Skip items that are already up-to-date
 - Preserve file permissions and timestamps
 
@@ -166,9 +185,14 @@ The script will:
   - Skills: `~/.copilot/skills`
   - Skill workspace paths are rewritten to `.copilot/...` during sync
   - Agents: not synced by this script
+- Claude Code (`cc`)
+  - Skills: `~/.claude/skills`
+  - Skill workspace paths are rewritten to `.claude/...` during sync
+  - Agents: not synced by this script
 
 ## Documentation
 
 - **Creating OpenCode Skills**: https://opencode.ai/docs/skills/
 - **Creating OpenCode Agents**: https://opencode.ai/docs/agents/
+- **Claude Code Skills**: https://code.claude.com/docs/en/skills
 - **Agent Skills Specification**: https://agentskills.io/ - An open format for creating reusable agent skills.
