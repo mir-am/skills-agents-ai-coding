@@ -78,7 +78,7 @@ Submit AI-generated code review from `.opencode/review/` to GitHub PR. Validates
 **Requirements:** git, GitHub CLI (`gh`)
 
 ### changelog-bump-ver
-Promote `CHANGELOG.md` unreleased notes into the next release, infer the current SemVer bump style when possible, add a dated release heading, recreate an empty `[Unreleased]` template with `Misc` at the end for this repo's extended changelog format, and update direct Maven project versions in `pom.xml` files.
+Promote `CHANGELOG.md` unreleased notes into the next release, infer the current SemVer bump style when possible, add a dated release heading, recreate an empty `[Unreleased]` template with `Misc` at the end for this repo's extended changelog format, and update direct Maven project versions in `pom.xml` files to the next development `-SNAPSHOT` version.
 
 **Requirements:** none
 
