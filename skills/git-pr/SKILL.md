@@ -17,7 +17,7 @@ metadata:
 - Create concise PR description with summary and 3-5 key changes
 - Link GitHub issue if working on one in current session
 - Create GitHub PR using `gh` CLI and self-assign it to the authenticated GitHub user
-- Update root `CHANGELOG.md` when present with one PR-linked unreleased bullet
+- Update root `CHANGELOG.md` when present with one PR-linked unreleased bullet, then commit and push that changelog update back to the same branch
 
 ## When to use me
 
@@ -44,6 +44,7 @@ Use this skill when the user asks to create a pull request from the current feat
 1. Check if branch exists on remote: `git ls-remote --heads origin <branch-name>`
 2. If not on remote: `git push -u origin <branch-name>`
 3. If exists on remote: `git push`
+4. If a follow-up changelog sync creates a new `CHANGELOG.md` commit after PR creation, push that commit to the same branch as well
 
 ## PR Title Generation
 
@@ -105,7 +106,7 @@ gh pr create --base <master-or-main> --assignee @me --title "<title>" --body "<d
 
 - If working on an issue, append `Closes #<issue-number>` to the description
 - Always include `--assignee @me` so the PR is assigned to the signed-in `gh` user
-- Capture the created PR number and URL for any follow-up changelog sync
+- Capture the created PR number and URL for any follow-up changelog sync, commit, and push
 - Return the PR URL to the user
 
 ## CHANGELOG.md Sync
@@ -118,6 +119,43 @@ After the PR is created, optionally sync the repository root `CHANGELOG.md`.
 - Only if `## [Unreleased]` exists exactly once
 - Only if the unreleased section already contains the target subsection heading
 - If any of the above checks fail, skip changelog editing without failing PR creation
+
+### Changelog Commit and Push Workflow
+
+After the PR exists and its number is known:
+
+1. Update or insert the single PR-linked unreleased bullet using the PR number
+2. If `CHANGELOG.md` is unchanged after the sync logic, stop here
+3. If `CHANGELOG.md` changed, stage only that file:
+   ```bash
+   git add CHANGELOG.md
+   ```
+4. Verify the staged set contains only `CHANGELOG.md` before committing:
+   ```bash
+   git diff --cached --name-only
+   ```
+   If any staged path other than `CHANGELOG.md` appears, warn and skip the changelog commit rather than risking unrelated files in the commit.
+5. Create a dedicated changelog commit:
+   ```bash
+   git commit -m "docs: add changelog entry for PR #<pr-number>"
+   ```
+   If the skill updated an existing bullet rather than adding a new one, use:
+   ```bash
+   git commit -m "docs: update changelog entry for PR #<pr-number>"
+   ```
+6. Push that new changelog commit to the same branch that backs the PR:
+   ```bash
+   git push
+   ```
+
+Rules:
+
+- Only create the follow-up changelog commit when `CHANGELOG.md` actually changed
+- Stage only `CHANGELOG.md`; never use broad staging like `git add .`
+- Verify the staged set contains only `CHANGELOG.md` before `git commit`; otherwise warn and skip the changelog commit
+- Keep the changelog commit dedicated to the changelog sync so the PR history is easy to understand
+- If `CHANGELOG.md` already has unrelated local edits that make the sync unsafe or ambiguous, skip changelog editing and warn the user instead of guessing
+- Do not fail PR creation just because changelog commit or push steps are skipped
 
 ### Changelog Entry Format
 
@@ -148,6 +186,7 @@ Choose the best matching subsection under `## [Unreleased]` based on the PR's hi
 - Only move bullets within the `## [Unreleased]` section (between its subsections) when the PR's high-level purpose is better represented elsewhere
 - Never create duplicate bullets for the same PR number within `## [Unreleased]`
 - If multiple matching `(#<pr-number>)` bullets exist within `## [Unreleased]`, or if matching bullets are found only outside `## [Unreleased]`, treat the changelog as ambiguous and skip editing
+- If changelog sync succeeds and produces a file change, commit and push that `CHANGELOG.md` change to the same PR branch
 
 ## Error Handling
 
@@ -156,4 +195,7 @@ Choose the best matching subsection under `## [Unreleased]` based on the PR's hi
 - `gh` not installed → "Error: GitHub CLI not found. Install: https://cli.github.com/"
 - `gh` not authenticated / `gh auth status` fails → "Error: GitHub CLI not authenticated. Run: gh auth login"
 - Self-assignment fails (for example, assignees unsupported or user not assignable) → surface the `gh` error clearly and do not claim the PR was self-assigned
-- `CHANGELOG.md` missing, malformed, or missing the needed unreleased subsection → skip changelog sync and continue
+- `CHANGELOG.md` missing, malformed, ambiguous, or missing the needed unreleased subsection → skip changelog sync and continue
+- Staged set contains files other than `CHANGELOG.md` after sync → warn and skip the changelog commit to avoid committing unrelated staged changes
+- `git commit` for `CHANGELOG.md` fails → warn user but keep the PR: "Warning: PR created but changelog commit failed."
+- `git push` for the follow-up changelog commit fails → warn user but keep the PR: "Warning: PR created but changelog commit was not pushed."

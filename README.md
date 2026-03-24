@@ -23,12 +23,12 @@ Smart git commit with branch protection, session-aware staging, and conventional
 **Requirements:** git
 
 ### git-pr
-Create GitHub pull requests with a smart title and description from branch commits, then self-assign them to the authenticated `gh` user.
+Create GitHub pull requests with a smart title and description from branch commits, self-assign them to the authenticated `gh` user, and commit/push any synced `CHANGELOG.md` entry back to the same PR branch.
 
 **Requirements:** git, GitHub CLI (`gh`)
 
 ### git-push
-Push commits to the feature branch and update the open PR description with new changes.
+Push commits to the feature branch, update the open PR description with new changes, and commit/push any synced `CHANGELOG.md` update to the same branch.
 
 **Requirements:** git, GitHub CLI (`gh`)
 
