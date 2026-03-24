@@ -66,11 +66,13 @@ Only update the PR description when the outgoing commits add something new. Do n
 ### Detect Open PR
 
 ```bash
-gh pr view --json number,url,body --jq '{number: .number, url: .url, body: .body}' 2>/dev/null
+pr_json="$(gh pr view --json number,url,body --jq '{number: .number, url: .url, body: .body}' 2>&1)"
+status=$?
 ```
 
-- If no open PR exists → skip PR update, just report the push
-- If PR found → proceed to analyzing the new commits
+- If `status` is `0` → PR found; proceed to analyzing the new commits
+- If `pr_json` clearly indicates no open PR for this branch → skip PR update and just report the push
+- If `status` is non-zero for any other reason → surface the `gh` error instead of treating it like no PR exists
 
 ### Analyze New Commits
 
@@ -189,6 +191,7 @@ Rules:
 - No unpushed commits → "Nothing to push — branch is up-to-date with remote."
 - `gh` not installed → "Error: GitHub CLI not found. Install: https://cli.github.com/"
 - No open PR → push succeeds, inform user: "Pushed to <branch>. No open PR found to update."
+- `gh pr view` fails for any reason other than no open PR for the branch → surface the `gh` error and do not silently skip PR/changelog updates
 - `gh pr edit` fails → warn user but do not fail the push: "Warning: Push succeeded but PR description update failed."
 - `CHANGELOG.md` missing, malformed, ambiguous, or missing the needed unreleased subsection → skip changelog sync and continue
 - Staged set contains files other than `CHANGELOG.md` after sync → warn and skip the changelog commit to avoid committing unrelated staged changes
