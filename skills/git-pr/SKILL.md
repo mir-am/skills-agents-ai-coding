@@ -17,7 +17,7 @@ metadata:
 - Create concise PR description with summary and 3-5 key changes
 - Link GitHub issue if working on one in current session
 - Create GitHub PR using `gh` CLI and self-assign it to the authenticated GitHub user
-- Update root `CHANGELOG.md` when present with one PR-linked unreleased bullet, then commit and push that changelog update back to the same branch
+- Update root `CHANGELOG.md` when present with one PR-linked unreleased bullet using the PR URL, then commit and push that changelog update back to the same branch
 
 ## When to use me
 
@@ -124,7 +124,7 @@ After the PR is created, optionally sync the repository root `CHANGELOG.md`.
 
 After the PR exists and its number is known:
 
-1. Update or insert the single PR-linked unreleased bullet using the PR number
+1. Update or insert the single PR-linked unreleased bullet using the PR number and PR URL
 2. If `CHANGELOG.md` is unchanged after the sync logic, stop here
 3. If `CHANGELOG.md` changed, stage only that file:
    ```bash
@@ -161,7 +161,7 @@ Rules:
 
 - Write exactly one bullet for the PR in this format:
   ```markdown
-  - <high-level PR summary> (#<pr-number>)
+  - <high-level PR summary> ([#<pr-number>](<pr-url>))
   ```
 - Keep it to one line
 - Use changelog-style wording, not PR-body wording
@@ -182,10 +182,11 @@ Choose the best matching subsection under `## [Unreleased]` based on the PR's hi
 ### Update Rules
 
 - Treat changelog state as one PR = one bullet
-- Within the `## [Unreleased]` section, if a bullet ending with `(#<pr-number>)` already exists, update that line instead of appending a second one
+- Within the `## [Unreleased]` section, if a bullet already references that PR number using either `(#<pr-number>)` or `([#<pr-number>](<pr-url>))`, update that line instead of appending a second one
 - Only move bullets within the `## [Unreleased]` section (between its subsections) when the PR's high-level purpose is better represented elsewhere
 - Never create duplicate bullets for the same PR number within `## [Unreleased]`
-- If multiple matching `(#<pr-number>)` bullets exist within `## [Unreleased]`, or if matching bullets are found only outside `## [Unreleased]`, treat the changelog as ambiguous and skip editing
+- If multiple matching bullets for the same PR number exist within `## [Unreleased]`, or if matching bullets are found only outside `## [Unreleased]`, treat the changelog as ambiguous and skip editing
+- If an existing plain `(#<pr-number>)` suffix is found, rewrite it to the linked `([#<pr-number>](<pr-url>))` form during the update
 - If changelog sync succeeds and produces a file change, commit and push that `CHANGELOG.md` change to the same PR branch
 
 ## Error Handling

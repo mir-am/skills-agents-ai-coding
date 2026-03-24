@@ -14,7 +14,7 @@ metadata:
 - Push new local commits on a feature branch to the remote
 - Detect if an open PR exists for the current branch
 - Update the PR's "Changes" section only when the push adds significant new functionality
-- Update the existing PR-linked `CHANGELOG.md` entry only when the PR's high-level scope materially changes, then commit that changelog change to the same branch before pushing
+- Update the existing PR-linked `CHANGELOG.md` entry only when the PR's high-level scope materially changes, using the PR URL in the changelog bullet, then commit that changelog change to the same branch before pushing
 - Skip PR updates for commits that fix bugs or mistakes from earlier commits in the same branch
 - Preserve the existing PR Summary while appending new change entries
 
@@ -66,7 +66,7 @@ Only update the PR description when the outgoing commits add something new. Do n
 ### Detect Open PR
 
 ```bash
-gh pr view --json number,body --jq '{number: .number, body: .body}' 2>/dev/null
+gh pr view --json number,url,body --jq '{number: .number, url: .url, body: .body}' 2>/dev/null
 ```
 
 - If no open PR exists → skip PR update, just report the push
@@ -142,7 +142,7 @@ Preserve the existing structure from the `git-pr` skill:
 Only reach this step if an open PR exists for the current branch and the outgoing commits materially change what the PR delivers.
 
 1. Check whether root `CHANGELOG.md` exists and contains exactly one `## [Unreleased]` section
-2. Within the `## [Unreleased]` section, find the existing changelog bullet ending with `(#<pr-number>)`
+2. Within the `## [Unreleased]` section, find the existing changelog bullet for that PR number, whether it uses `(#<pr-number>)` or `([#<pr-number>](<pr-url>))`
 3. Re-evaluate the PR's high-level purpose after the push
 4. Update that one-line bullet only if the old wording no longer reflects the PR's overall scope
 5. If the best matching changelog subsection changed, move the bullet to the better subsection
@@ -168,12 +168,13 @@ Rules:
 - Only move the bullet if the newly selected subsection already exists under `## [Unreleased]`; otherwise skip changelog editing
 - Keep the changelog entry in this format:
   ```markdown
-  - <high-level PR summary> (#<pr-number>)
+  - <high-level PR summary> ([#<pr-number>](<pr-url>))
   ```
-- Keep the `(#<pr-number>)` suffix unchanged when rewriting text
+- When rewriting text, preserve the PR number and use the current PR URL in linked form
 - If the push only fixes, polishes, refactors, or addresses review feedback on existing branch work, leave the changelog unchanged
-- If no matching `(#<pr-number>)` bullet exists, skip changelog editing
-- If multiple matching `(#<pr-number>)` bullets exist, treat the changelog as ambiguous and skip editing
+- If no matching bullet for the PR number exists, skip changelog editing
+- If multiple matching bullets for the PR number exist, treat the changelog as ambiguous and skip editing
+- If an existing plain `(#<pr-number>)` suffix is found, rewrite it to the linked `([#<pr-number>](<pr-url>))` form during the update
 - Only create the dedicated changelog commit when `CHANGELOG.md` actually changed
 - Stage only `CHANGELOG.md`; never use broad staging like `git add .`
 - Verify the staged set contains only `CHANGELOG.md` before `git commit`; otherwise warn and skip the changelog commit
