@@ -130,7 +130,12 @@ After the PR exists and its number is known:
    ```bash
    git add CHANGELOG.md
    ```
-4. Create a dedicated changelog commit:
+4. Verify the staged set contains only `CHANGELOG.md` before committing:
+   ```bash
+   git diff --cached --name-only
+   ```
+   If any staged path other than `CHANGELOG.md` appears, warn and skip the changelog commit rather than risking unrelated files in the commit.
+5. Create a dedicated changelog commit:
    ```bash
    git commit -m "docs: add changelog entry for PR #<pr-number>"
    ```
@@ -138,7 +143,7 @@ After the PR exists and its number is known:
    ```bash
    git commit -m "docs: update changelog entry for PR #<pr-number>"
    ```
-5. Push that new changelog commit to the same branch that backs the PR:
+6. Push that new changelog commit to the same branch that backs the PR:
    ```bash
    git push
    ```
@@ -147,6 +152,7 @@ Rules:
 
 - Only create the follow-up changelog commit when `CHANGELOG.md` actually changed
 - Stage only `CHANGELOG.md`; never use broad staging like `git add .`
+- Verify the staged set contains only `CHANGELOG.md` before `git commit`; otherwise warn and skip the changelog commit
 - Keep the changelog commit dedicated to the changelog sync so the PR history is easy to understand
 - If `CHANGELOG.md` already has unrelated local edits that make the sync unsafe or ambiguous, skip changelog editing and warn the user instead of guessing
 - Do not fail PR creation just because changelog commit or push steps are skipped
@@ -190,5 +196,6 @@ Choose the best matching subsection under `## [Unreleased]` based on the PR's hi
 - `gh` not authenticated / `gh auth status` fails → "Error: GitHub CLI not authenticated. Run: gh auth login"
 - Self-assignment fails (for example, assignees unsupported or user not assignable) → surface the `gh` error clearly and do not claim the PR was self-assigned
 - `CHANGELOG.md` missing, malformed, ambiguous, or missing the needed unreleased subsection → skip changelog sync and continue
+- Staged set contains files other than `CHANGELOG.md` after sync → warn and skip the changelog commit to avoid committing unrelated staged changes
 - `git commit` for `CHANGELOG.md` fails → warn user but keep the PR: "Warning: PR created but changelog commit failed."
 - `git push` for the follow-up changelog commit fails → warn user but keep the PR: "Warning: PR created but changelog commit was not pushed."
