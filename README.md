@@ -92,6 +92,11 @@ Save or update the agent's current plan to `.opencode/plans/` in the working pro
 
 **Requirements:** none
 
+### work-report
+Write a self-contained markdown report to `.opencode/notes/` describing the problem, solution, project context, git-visible changed files, concise step log, and per-file patches for review or handoff.
+
+**Requirements:** none
+
 ### session-note
 Capture the current work session into a markdown note for continuity.
 
