@@ -49,6 +49,12 @@ function Get-AgentsTargetDir {
   }
 }
 
+function Test-IsSupportedTarget {
+  param([string]$Target)
+
+  return $Target -in @('oc', 'ghc', 'cc')
+}
+
 function Ensure-TempRoot {
   if ($null -eq $script:TempRoot) {
     $script:TempRoot = Join-Path ([System.IO.Path]::GetTempPath()) ([System.Guid]::NewGuid().ToString())
@@ -540,14 +546,24 @@ try {
     Write-Host 'DRY RUN MODE - No changes will be made'
   }
 
-  $targets = if ($SyncAll) { @('oc', 'ghc', 'cc') } else { @($TargetProgram) }
+  [string[]]$targets = if ($SyncAll) { 'oc', 'ghc', 'cc' } else { $TargetProgram }
+
+  foreach ($target in $targets) {
+    if (-not (Test-IsSupportedTarget -Target $target)) {
+      throw "Internal error: invalid target value '$target' after argument parsing"
+    }
+  }
+
   Confirm-SyncOperation -Targets $targets
 
-  for ($i = 0; $i -lt $targets.Count; $i++) {
-    Sync-Target -Target $targets[$i]
-    if ($i -lt ($targets.Count - 1)) {
+  $targetIndex = 0
+  foreach ($target in $targets) {
+    Sync-Target -Target $target
+    if ($targetIndex -lt ($targets.Count - 1)) {
       Write-Host ''
     }
+
+    $targetIndex++
   }
 }
 finally {
