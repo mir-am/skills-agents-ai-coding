@@ -15,6 +15,10 @@ function Write-Usage {
   Write-Host "Usage: ./sync.ps1 [oc|ghc|cc] [--dry-run|-DryRun] [--sync-all|-SyncAll]"
 }
 
+function Test-IsPowerShell7OrNewer {
+  return $PSVersionTable.PSVersion.Major -ge 7
+}
+
 function Test-IsAdministrator {
   if (-not $IsWindows) {
     return $false
@@ -437,6 +441,11 @@ function Sync-Target {
 }
 
 try {
+  if (-not (Test-IsPowerShell7OrNewer)) {
+    Write-Error 'This script requires PowerShell 7 or newer. Run it with pwsh.'
+    exit 1
+  }
+
   if (Test-IsAdministrator) {
     Write-Error 'This script must be run as a normal user, not Administrator.'
     exit 1
