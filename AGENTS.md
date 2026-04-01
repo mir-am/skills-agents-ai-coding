@@ -27,6 +27,7 @@ opencode-skills/
     git-push/
     make-changelog/
     save-plan/
+    work-report/
     session-note/
   agents/              # Agents: flat .md files, one per agent
     code-review.md
@@ -101,6 +102,7 @@ Each agent is a **single `.md` file** in the `agents/` directory. The filename (
 - Commands should use `bash` code blocks with exact syntax
 - Skills use the open Agent Skills format and can be synced to supported CLIs
 - Source skills are authored once under `skills/`; `sync.sh` may rewrite copies for non-OpenCode targets during installation
+- Skills that write project artifacts should use source `.opencode/...` paths; `sync.sh` rewrites them for `ghc` and `cc` targets during install
 - Agents target the OpenCode agent runtime and its tool set (Bash, Read, Write, Edit, Glob, Grep, etc.)
 - Some GitHub-focused skills may combine official API flows with clearly labeled best-effort prompt/comment flows when GitHub features are partially exposed through `gh`
 - Never commit directly on `main` or `master`; create or switch to a feature branch first
