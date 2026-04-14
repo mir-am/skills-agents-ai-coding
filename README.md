@@ -35,7 +35,7 @@ Skills are grouped by workflow to make related capabilities easier to discover.
 | `gh-issue-fix` | Pick up a GitHub issue and implement a fix or feature with a user-approved plan. Fetch issue details, explore the codebase, generate an implementation plan, create a feature branch, and implement changes. | `git`, GitHub CLI (`gh`) |
 | `gh-protect-default-branch` | Protect the default branch from direct pushes so changes land only via pull requests. | GitHub CLI (`gh`), repository admin permissions |
 
-### Reviews
+### Code Review
 
 | Skill | What it does | Requirements |
 | --- | --- | --- |
@@ -133,7 +133,7 @@ The script will:
 - Install new skills that don't exist in the selected target skills directory
 - Install new OpenCode agents that don't exist in `~/.config/opencode/agents/`
 - Update existing skills/agents if the repository version is different
-- Use `python3` to prepare non-OpenCode skill copies before install by stripping extra frontmatter and rewriting workspace paths
+- Use `python3` to prepare non-OpenCode skill copies before installation by stripping extra frontmatter and rewriting workspace paths
 - Rewrite skill workspace paths from `.opencode/...` to `.copilot/...` when syncing to `ghc`
 - Rewrite skill workspace paths from `.opencode/...` to `.claude/...` when syncing to `cc`
 - Skip items that are already up-to-date
