@@ -1,8 +1,8 @@
 # Mir's Agents & Skills for AI Coding Assistants
 
-Reusable Agent Skills and agents for CLI coding assistants.
+Reusable skills and agents for AI coding assistants.
 
-This repository stores skills in the open Agent Skills format and supports syncing them to multiple CLIs:
+This repository stores skills in the open Agent Skills format and supports syncing them to multiple CLI-based AI coding assistants:
 
 - OpenCode (`oc`)
 - GitHub Copilot CLI (`ghc`)
