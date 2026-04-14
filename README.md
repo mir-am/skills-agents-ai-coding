@@ -61,6 +61,8 @@ Skills are grouped by workflow to make related capabilities easier to discover.
 | `session-note` | Capture the current work session into a markdown note for continuity. | none |
 | `work-report` | Write a self-contained markdown report to `.opencode/notes/` describing the problem, solution, project context, git-visible changed files, concise step log, and per-file patches for review or handoff. | none |
 
+> Note: Use GitHub CLI (gh) v2.88.0+ to get the latest supported gh functionality used by these skills.
+
 ## Available Agents
 
 ### code-review
@@ -72,6 +74,7 @@ Reviews feature branch diffs for quality, bugs, performance, and security. Write
 
 - rsync (for sync script)
 - python3 (required when syncing non-OpenCode targets: `ghc` and `cc`)
+- PowerShell 7 (for the Windows sync script)
 
 ## Usage
 
