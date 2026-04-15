@@ -78,69 +78,25 @@ Reviews feature branch diffs for quality, bugs, performance, and security. Write
 
 ## Usage
 
-Sync skills to OpenCode by default, plus OpenCode agents:
+Sync to the default OpenCode target:
 
 ```bash
 ./sync.sh
-```
-
-Sync explicitly to OpenCode:
-
-```bash
-./sync.sh oc
-```
-
-Sync skills to GitHub Copilot CLI:
-
-```bash
-./sync.sh ghc
-```
-
-Sync skills to Claude Code:
-
-```bash
-./sync.sh cc
-```
-
-Sync all supported targets:
-
-```bash
-./sync.sh --sync-all
-```
-
-Preview changes without applying them (dry-run):
-
-```bash
-./sync.sh --dry-run
-```
-
-Preview a GitHub Copilot CLI sync without applying changes:
-
-```bash
 ./sync.sh ghc --dry-run
 ```
 
-Preview a Claude Code sync without applying changes:
+Windows PowerShell:
 
-```bash
-./sync.sh cc --dry-run
+```powershell
+./sync.ps1
+./sync.ps1 ghc --dry-run
 ```
 
-Preview all supported targets without applying changes:
+Common options:
 
-```bash
-./sync.sh --sync-all --dry-run
-```
-
-The script will:
-- Install new skills that don't exist in the selected target skills directory
-- Install new OpenCode agents that don't exist in `~/.config/opencode/agents/`
-- Update existing skills/agents if the repository version is different
-- Use `python3` to prepare non-OpenCode skill copies before installation by stripping extra frontmatter and rewriting workspace paths
-- Rewrite skill workspace paths from `.opencode/...` to `.copilot/...` when syncing to `ghc`
-- Rewrite skill workspace paths from `.opencode/...` to `.claude/...` when syncing to `cc`
-- Skip items that are already up-to-date
-- Preserve file permissions and timestamps
+- `oc`, `ghc`, `cc` choose a target
+- `--dry-run` preview changes without applying them
+- `--sync-all` sync all supported targets
 
 ## Sync Targets
 
