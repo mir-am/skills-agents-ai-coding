@@ -24,6 +24,7 @@ Use this skill when the user asks to create a new git branch for the current wor
 ## Prerequisites
 
 - `git` must be installed
+- Use `git switch` when available; if the installed Git is too old to support it, use `git checkout` / `git checkout -b` instead
 - The repository should have a detectable default branch from `origin/HEAD` or local `main`, `master`, or `develop`
 - If the current branch is not the detected default branch and the worktree is dirty, ask the user before switching branches
 
@@ -99,13 +100,20 @@ git show-ref --verify --quiet "refs/heads/<branch-name>"
 3. If already on the detected default branch, create the new branch directly from the current state:
    ```bash
    git switch -c <branch-name>
+   # Fallback for older Git versions:
+   git checkout -b <branch-name>
    ```
    This preserves staged and unstaged changes on the new branch.
 
 4. If on a different branch and the worktree is clean, return to the default branch first, then create the new branch:
    ```bash
    git switch <default-branch>
+   # Fallback for older Git versions:
+   git checkout <default-branch>
+
    git switch -c <branch-name>
+   # Fallback for older Git versions:
+   git checkout -b <branch-name>
    ```
 
 5. If on a different branch and the worktree is dirty:
@@ -123,6 +131,6 @@ git show-ref --verify --quiet "refs/heads/<branch-name>"
 - Could not detect default branch → "Error: Could not determine the default branch from `origin/HEAD` or local `main`/`master`/`develop`."
 - Branch intent still unclear → ask the user for the desired branch name
 - Dirty worktree on a non-default branch → ask before switching branches
-- `git switch` fails due to uncommitted changes or conflicts → surface the git error and stop
+- Branch switch/create command fails due to uncommitted changes, conflicts, or unsupported git subcommands → surface the git error and stop
 - Generated branch name already exists locally → add a numeric suffix like `-2` or `-3`
 - Never use destructive commands like `git reset --hard` and never discard the user's changes automatically
