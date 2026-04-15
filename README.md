@@ -1,8 +1,8 @@
 # Mir's Agents & Skills for AI Coding Assistants
 
-Reusable Agent Skills and agents for CLI coding assistants.
+Reusable skills and agents for AI coding assistants.
 
-This repository stores skills in the open Agent Skills format and supports syncing them to multiple CLIs:
+This repository stores skills in the open Agent Skills format and supports syncing them to multiple CLI-based AI coding assistants:
 
 - OpenCode (`oc`)
 - GitHub Copilot CLI (`ghc`)
@@ -17,90 +17,51 @@ Skill source files in this repository keep OpenCode-style workspace paths like `
 
 ## Available Skills
 
-### git-commit
-Smart git commit with branch protection, session-aware staging, and conventional commits.
+Skills are grouped by workflow to make related capabilities easier to discover.
 
-**Requirements:** git
+### Git Workflow
 
-### git-pr
-Create GitHub pull requests with a smart title and description from branch commits, self-assign them to the authenticated `gh` user, and commit/push any synced `CHANGELOG.md` entry back to the same PR branch.
+| Skill | What it does | Requirements |
+| --- | --- | --- |
+| `git-commit` | Smart git commit with branch protection, session-aware staging, and conventional commits. | `git` |
+| `git-pr` | Create GitHub pull requests with a smart title and description from branch commits, self-assign them to the authenticated `gh` user, and commit/push any synced `CHANGELOG.md` entry back to the same PR branch. | `git`, GitHub CLI (`gh`) |
+| `git-push` | Push commits to the feature branch, update the open PR description with new changes, and commit/push any synced `CHANGELOG.md` update to the same branch. | `git`, GitHub CLI (`gh`) |
 
-**Requirements:** git, GitHub CLI (`gh`)
+### GitHub Workflow
 
-### git-push
-Push commits to the feature branch, update the open PR description with new changes, and commit/push any synced `CHANGELOG.md` update to the same branch.
+| Skill | What it does | Requirements |
+| --- | --- | --- |
+| `gh-issue` | Create a GitHub issue for a bug or feature idea found during an agent session. | `git`, GitHub CLI (`gh`) |
+| `gh-issue-fix` | Pick up a GitHub issue and implement a fix or feature with a user-approved plan. Fetch issue details, explore the codebase, generate an implementation plan, create a feature branch, and implement changes. | `git`, GitHub CLI (`gh`) |
+| `gh-protect-default-branch` | Protect the default branch from direct pushes so changes land only via pull requests. | GitHub CLI (`gh`), repository admin permissions |
 
-**Requirements:** git, GitHub CLI (`gh`)
+### Code Review
 
-### gh-issue
-Create a GitHub issue for a bug or feature idea found during an agent session.
+| Skill | What it does | Requirements |
+| --- | --- | --- |
+| `gh-pr-review` | Review a GitHub pull request using `gh`, fetch PR metadata and diffs, and generate structured feedback focused on quality, bugs, performance, and security. | `git`, GitHub CLI (`gh`) |
+| `gh-cr-submit` | Submit AI-generated code review from `.opencode/review/` to GitHub PR, validate branch matching, handle forks, and add an AI-generated warning header before submission. | `git`, GitHub CLI (`gh`) |
+| `gh-copilot-review` | Request a GitHub Copilot review for a PR via `gh` CLI. | GitHub CLI (`gh`) |
+| `gh-copilot-review-read` | Read GitHub Copilot PR review comments, pair them with suggestions when present, and write a markdown digest to `.opencode/review/`. | GitHub CLI (`gh`) |
+| `gh-copilot-review-resolve` | Resolve selected GitHub Copilot PR review threads with cautious defaults, posting `addressed` or `ignored` replies via `gh` GraphQL before resolving each thread. | GitHub CLI (`gh`) |
 
-**Requirements:** git, GitHub CLI (`gh`)
+### Release & Changelog
 
-### gh-issue-fix
-Pick up a GitHub issue and implement a fix or feature with a user-approved plan. Fetches issue details, explores codebase, generates implementation plan, creates feature branch, and implements changes.
+| Skill | What it does | Requirements |
+| --- | --- | --- |
+| `changelog-bump-ver` | Promote `CHANGELOG.md` unreleased notes into the next release, infer the current SemVer bump style when possible, add a dated release heading, recreate an empty `[Unreleased]` template with `Misc` at the end, and update direct Maven project versions in `pom.xml` files to the next development `-SNAPSHOT` version. | none |
+| `make-changelog` | Create an initial `CHANGELOG.md` with unreleased entries using Keep a Changelog format plus a `Misc` section for notable code changes that do not fit the standard sections. | `git` |
+| `gh-release` | Create an annotated git tag and GitHub prerelease from the latest versioned `CHANGELOG.md` entry, preserve the repo's `Misc` subsection when present, and append a full changelog compare link. | `git`, GitHub CLI (`gh`) |
 
-**Requirements:** git, GitHub CLI (`gh`)
+### Planning & Notes
 
-### gh-copilot-review-read
-Read GitHub Copilot PR review comments, pair them with suggestions (if any), and write a markdown digest to `.opencode/review/`.
+| Skill | What it does | Requirements |
+| --- | --- | --- |
+| `save-plan` | Save or update the agent's current plan to `.opencode/plans/` in the working project. | none |
+| `session-note` | Capture the current work session into a markdown note for continuity. | none |
+| `work-report` | Write a self-contained markdown report to `.opencode/notes/` describing the problem, solution, project context, git-visible changed files, concise step log, and per-file patches for review or handoff. | none |
 
-**Requirements:** GitHub CLI (`gh`)
-
-### gh-copilot-review
-Request a GitHub Copilot review for a PR via `gh` CLI.
-
-**Requirements:** GitHub CLI (`gh`)
-
-### gh-copilot-review-resolve
-Resolve selected GitHub Copilot PR review threads with cautious defaults, posting `addressed` or `ignored` replies via `gh` GraphQL before resolving each thread.
-
-**Requirements:** GitHub CLI (`gh`)
-
-### gh-protect-default-branch
-Protect the default branch from direct pushes so changes land only via pull requests.
-
-**Requirements:** GitHub CLI (`gh`), repository admin permissions
-
-### gh-pr-review
-Review a GitHub Pull Request using gh CLI and provide structured feedback. Fetches PR metadata, diffs, and changed files, then generates a comprehensive code review focusing on quality, bugs, performance, and security.
-
-**Requirements:** git, GitHub CLI (`gh`)
-
-### gh-release
-Create an annotated git tag and GitHub prerelease from the latest versioned `CHANGELOG.md` entry. Uses the newest versioned section below `[Unreleased]` as the release notes source, preserves the repo's `Misc` subsection at the end when present, and appends a full changelog compare link.
-
-**Requirements:** git, GitHub CLI (`gh`)
-
-### gh-cr-submit
-Submit AI-generated code review from `.opencode/review/` to GitHub PR. Validates branch matching, handles forks, allows the user to choose from multiple reviews, and adds an AI-generated warning header before submission.
-
-**Requirements:** git, GitHub CLI (`gh`)
-
-### changelog-bump-ver
-Promote `CHANGELOG.md` unreleased notes into the next release, infer the current SemVer bump style when possible, add a dated release heading, recreate an empty `[Unreleased]` template with `Misc` at the end for this repo's extended changelog format, and update direct Maven project versions in `pom.xml` files to the next development `-SNAPSHOT` version.
-
-**Requirements:** none
-
-### make-changelog
-Create an initial CHANGELOG.md with unreleased entries using Keep a Changelog format plus a `Misc` section for notable code changes that do not fit the standard sections. Extracts up to 10 major entries from README.md, commit history, and codebase structure.
-
-**Requirements:** git
-
-### save-plan
-Save or update the agent's current plan to `.opencode/plans/` in the working project.
-
-**Requirements:** none
-
-### work-report
-Write a self-contained markdown report to `.opencode/notes/` describing the problem, solution, project context, git-visible changed files, concise step log, and per-file patches for review or handoff.
-
-**Requirements:** none
-
-### session-note
-Capture the current work session into a markdown note for continuity.
-
-**Requirements:** none
+> Note: Use GitHub CLI (gh) v2.88.0+ to get the latest supported gh functionality used by these skills.
 
 ## Available Agents
 
@@ -113,6 +74,7 @@ Reviews feature branch diffs for quality, bugs, performance, and security. Write
 
 - rsync (for sync script)
 - python3 (required when syncing non-OpenCode targets: `ghc` and `cc`)
+- PowerShell 7 (for the Windows sync script)
 
 ## Usage
 
@@ -174,7 +136,7 @@ The script will:
 - Install new skills that don't exist in the selected target skills directory
 - Install new OpenCode agents that don't exist in `~/.config/opencode/agents/`
 - Update existing skills/agents if the repository version is different
-- Use `python3` to prepare non-OpenCode skill copies before install by stripping extra frontmatter and rewriting workspace paths
+- Use `python3` to prepare non-OpenCode skill copies before installation by stripping extra frontmatter and rewriting workspace paths
 - Rewrite skill workspace paths from `.opencode/...` to `.copilot/...` when syncing to `ghc`
 - Rewrite skill workspace paths from `.opencode/...` to `.claude/...` when syncing to `cc`
 - Skip items that are already up-to-date
