@@ -118,20 +118,21 @@ Parse output:
 - `baseRefName` - Target branch (e.g., "main")
 - `headRefName` - Source branch (e.g., "feature-branch")
 - `isCrossRepository` - Boolean indicating if PR is from a fork
+- `headRepository.nameWithOwner` - Full source repository name for fork-based PRs
 - `headRepositoryOwner.login` - Owner of the source repository
 
 ### Step 4: Branch comparison logic
 
 **Case A: Same repository PR** (`isCrossRepository` = false)
-- Compare current branch with `baseRefName`
+- Compare current branch with `headRefName`
 - If match → proceed
-- If different → Ask: "Your current branch is `<current>`, but PR #<number> targets `<baseRefName>`. Continue with submission? (yes/no)"
+- If different → Ask: "Your current branch is `<current>`, but PR #<number> source branch is `<headRefName>` targeting `<baseRefName>`. Continue with submission? (yes/no)"
 
 **Case B: Cross-repo PR from fork** (`isCrossRepository` = true)
 - Note this is a fork-based PR
 - Compare current branch with `headRefName` (the feature branch from fork)
 - If match → proceed
-- If different → Ask: "This is a cross-repo PR from fork `<headRepositoryOwner>/<repo>`. Your current branch is `<current>`, but the PR source branch is `<headRefName>` targeting `<baseRefName>`. Continue with submission? (yes/no)"
+- If different → Ask: "This is a cross-repo PR from fork `<headRepository.nameWithOwner>`. Your current branch is `<current>`, but the PR source branch is `<headRefName>` targeting `<baseRefName>`. Continue with submission? (yes/no)"
 
 ### Step 5: Handle user response
 
@@ -427,10 +428,11 @@ git branch --show-current
 ### 5. Get PR info and check for forks
 
 ```bash
-gh pr view 456 --json baseRefName,headRefName,isCrossRepository,headRepositoryOwner
+gh pr view 456 --json baseRefName,headRefName,headRepository,isCrossRepository,headRepositoryOwner
 # Output: {
 #   "baseRefName": "main",
 #   "headRefName": "feat/add-metrics",
+#   "headRepository": {"nameWithOwner": "acme/analytics-app"},
 #   "isCrossRepository": false,
 #   "headRepositoryOwner": {"login": "acme"}
 # }
@@ -439,13 +441,14 @@ gh pr view 456 --json baseRefName,headRefName,isCrossRepository,headRepositoryOw
 ### 6. Branch comparison
 
 - Current branch: `feature/new-dashboard`
-- PR target: `main`
+- PR source branch: `feat/add-metrics`
+- PR target branch: `main`
 - Not a cross-repo PR
 - **Branches don't match!**
 
 **Agent asks user:**
 ```
-Your current branch is `feature/new-dashboard`, but PR #456 targets `main`. 
+Your current branch is `feature/new-dashboard`, but PR #456 source branch is `feat/add-metrics` targeting `main`.
 Continue with submission? (yes/no)
 ```
 
