@@ -1,5 +1,7 @@
 # Mir's Agents & Skills for AI Coding Assistants 🤖
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+
 Reusable skills and agents for AI coding assistants.
 
 This repository stores skills in the open Agent Skills format and supports syncing them to multiple CLI-based AI coding assistants:
