@@ -1,4 +1,4 @@
-# Mir's Agents & Skills for AI Coding Assistants
+# Mir's Agents & Skills for AI Coding Assistants 🤖
 
 Reusable skills and agents for AI coding assistants.
 
@@ -10,12 +10,7 @@ This repository stores skills in the open Agent Skills format and supports synci
 
 It also includes OpenCode-specific agents in `agents/`.
 
-Skill source files in this repository keep OpenCode-style workspace paths like `.opencode/...`. During target-specific sync, `sync.sh` rewrites those skill instructions before installing them:
-
-- `ghc` sync rewrites `.opencode/...` to `.copilot/...`
-- `cc` sync rewrites `.opencode/...` to `.claude/...`
-
-## Available Skills
+## Available Skills 🧠
 
 Skills are grouped by workflow to make related capabilities easier to discover.
 
@@ -116,7 +111,8 @@ Common options:
 
 ## Documentation
 
-- **Creating OpenCode Skills**: https://opencode.ai/docs/skills/
-- **Creating OpenCode Agents**: https://opencode.ai/docs/agents/
-- **Claude Code Skills**: https://code.claude.com/docs/en/skills
-- **Agent Skills Specification**: https://agentskills.io/ - An open format for creating reusable agent skills.
+- [Creating OpenCode Skills](https://opencode.ai/docs/skills/)
+- [Creating OpenCode Agents](https://opencode.ai/docs/agents/)
+- [Claude Code Skills](https://code.claude.com/docs/en/skills)
+- [GitHub Copilot Skills](https://docs.github.com/en/copilot/concepts/agents/about-agent-skills)
+- [Agent Skills Specification](https://agentskills.io/) - An open format for creating reusable agent skills.
