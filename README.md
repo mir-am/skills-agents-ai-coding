@@ -1,4 +1,4 @@
-# Mir's Agents & Skills for AI Coding Assistants
+# Mir's Agents & Skills for AI Coding Assistants 🤖
 
 Reusable skills and agents for AI coding assistants.
 
@@ -10,12 +10,7 @@ This repository stores skills in the open Agent Skills format and supports synci
 
 It also includes OpenCode-specific agents in `agents/`.
 
-Skill source files in this repository keep OpenCode-style workspace paths like `.opencode/...`. During target-specific sync, `sync.sh` rewrites those skill instructions before installing them:
-
-- `ghc` sync rewrites `.opencode/...` to `.copilot/...`
-- `cc` sync rewrites `.opencode/...` to `.claude/...`
-
-## Available Skills
+## Available Skills 🧠
 
 Skills are grouped by workflow to make related capabilities easier to discover.
 
@@ -79,69 +74,25 @@ Reviews feature branch diffs for quality, bugs, performance, and security. Write
 
 ## Usage
 
-Sync skills to OpenCode by default, plus OpenCode agents:
+Sync to the default OpenCode target:
 
 ```bash
 ./sync.sh
-```
-
-Sync explicitly to OpenCode:
-
-```bash
-./sync.sh oc
-```
-
-Sync skills to GitHub Copilot CLI:
-
-```bash
-./sync.sh ghc
-```
-
-Sync skills to Claude Code:
-
-```bash
-./sync.sh cc
-```
-
-Sync all supported targets:
-
-```bash
-./sync.sh --sync-all
-```
-
-Preview changes without applying them (dry-run):
-
-```bash
-./sync.sh --dry-run
-```
-
-Preview a GitHub Copilot CLI sync without applying changes:
-
-```bash
 ./sync.sh ghc --dry-run
 ```
 
-Preview a Claude Code sync without applying changes:
+Windows PowerShell:
 
-```bash
-./sync.sh cc --dry-run
+```powershell
+./sync.ps1
+./sync.ps1 ghc --dry-run
 ```
 
-Preview all supported targets without applying changes:
+Common options:
 
-```bash
-./sync.sh --sync-all --dry-run
-```
-
-The script will:
-- Install new skills that don't exist in the selected target skills directory
-- Install new OpenCode agents that don't exist in `~/.config/opencode/agents/`
-- Update existing skills/agents if the repository version is different
-- Use `python3` to prepare non-OpenCode skill copies before installation by stripping extra frontmatter and rewriting workspace paths
-- Rewrite skill workspace paths from `.opencode/...` to `.copilot/...` when syncing to `ghc`
-- Rewrite skill workspace paths from `.opencode/...` to `.claude/...` when syncing to `cc`
-- Skip items that are already up-to-date
-- Preserve file permissions and timestamps
+- `oc`, `ghc`, `cc` choose a target
+- `--dry-run` preview changes without applying them
+- `--sync-all` sync all supported targets
 
 ## Sync Targets
 
@@ -160,7 +111,8 @@ The script will:
 
 ## Documentation
 
-- **Creating OpenCode Skills**: https://opencode.ai/docs/skills/
-- **Creating OpenCode Agents**: https://opencode.ai/docs/agents/
-- **Claude Code Skills**: https://code.claude.com/docs/en/skills
-- **Agent Skills Specification**: https://agentskills.io/ - An open format for creating reusable agent skills.
+- [Creating OpenCode Skills](https://opencode.ai/docs/skills/)
+- [Creating OpenCode Agents](https://opencode.ai/docs/agents/)
+- [Claude Code Skills](https://code.claude.com/docs/en/skills)
+- [GitHub Copilot Skills](https://docs.github.com/en/copilot/concepts/agents/about-agent-skills)
+- [Agent Skills Specification](https://agentskills.io/) - An open format for creating reusable agent skills.
