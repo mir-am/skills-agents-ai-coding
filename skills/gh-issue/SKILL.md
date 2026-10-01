@@ -2,7 +2,6 @@
 name: gh-issue
 description: Create a GitHub issue for a bug or feature idea found during an agent session
 license: MIT
-compatibility: opencode
 metadata:
   audience: developers
   workflow: github

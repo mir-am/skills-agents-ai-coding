@@ -2,7 +2,6 @@
 name: git-branch
 description: Create a descriptive feature branch from the repo default branch using session context and current git changes
 license: MIT
-compatibility: opencode
 metadata:
   audience: developers
   workflow: git

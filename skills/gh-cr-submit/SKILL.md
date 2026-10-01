@@ -2,7 +2,6 @@
 name: gh-cr-submit
 description: Submit AI-generated code review from .opencode/review/ to GitHub PR
 license: MIT
-compatibility: opencode
 metadata:
   audience: developers
   workflow: code-review

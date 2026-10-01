@@ -2,7 +2,6 @@
 name: gh-copilot-review-resolve
 description: Resolve selected GitHub Copilot PR review threads with cautious defaults using gh GraphQL mutations
 license: MIT
-compatibility: opencode
 metadata:
   audience: developers
   workflow: github

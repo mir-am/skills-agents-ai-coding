@@ -2,7 +2,6 @@
 name: git-commit
 description: Smart git commit with branch protection, session-aware staging, and conventional commits
 license: MIT
-compatibility: opencode
 metadata:
   audience: developers
   workflow: git

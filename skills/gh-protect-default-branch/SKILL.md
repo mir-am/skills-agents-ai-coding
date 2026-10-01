@@ -2,7 +2,6 @@
 name: gh-protect-default-branch
 description: Protect the default branch from direct pushes so changes land only via pull requests
 license: MIT
-compatibility: opencode
 metadata:
   audience: developers
   workflow: github

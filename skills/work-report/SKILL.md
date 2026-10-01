@@ -2,7 +2,6 @@
 name: work-report
 description: Write a self-contained markdown report of the work done, changed files, concise decision steps, and applied patches
 license: MIT
-compatibility: opencode
 metadata:
   audience: developers
   workflow: productivity
