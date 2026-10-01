@@ -56,8 +56,6 @@ Each skill is a **directory** under `skills/` containing a `SKILL.md` file.
    ---
    ```
 
-   Omit the `compatibility` field from source skills; skills are distributed to multiple coding assistants.
-
    Non-OpenCode sync targets receive transformed copies of this source file. Installs for `ghc` and `cc` strip repo-specific metadata fields and rewrite workspace paths for their target environment.
 
 2. **Markdown body** with structured sections:

@@ -177,7 +177,7 @@ def strip_target_frontmatter(text):
                 continue
             skip_metadata = False
 
-        if stripped.startswith("license:") or stripped.startswith("compatibility:"):
+        if stripped.startswith("license:"):
             continue
 
         if stripped.startswith("metadata:"):
