@@ -21,6 +21,7 @@ opencode-skills/
     gh-issue/
     gh-issue-fix/
     gh-pr/
+    gh-pr-merge/
     gh-pr-review/
     gh-release/
     git-branch/
