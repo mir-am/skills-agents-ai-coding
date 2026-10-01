@@ -36,7 +36,6 @@ opencode-skills/
     session-note/
   agents/              # Agents: flat .md files, one per agent
     code-review.md
-  sync.sh              # Installs/updates skills for supported CLIs and agents for OpenCode
   README.md
   AGENTS.md            # This file
 ```
@@ -57,8 +56,6 @@ Each skill is a **directory** under `skills/` containing a `SKILL.md` file.
      category: <category>
    ---
    ```
-
-   Non-OpenCode sync targets receive transformed copies of this source file. Installs for `ghc` and `cc` strip repo-specific metadata fields and rewrite workspace paths for their target environment.
 
 2. **Markdown body** with structured sections:
    - `## What I do` - Bullet list of capabilities
@@ -104,9 +101,9 @@ Each agent is a **single `.md` file** in the `agents/` directory. The filename (
 - Each agent is a single `.md` file directly in `agents/`
 - Skills and agents are self-contained; all instructions live in their markdown file
 - Commands should use `bash` code blocks with exact syntax
-- Skills use the open Agent Skills format and can be synced to supported CLIs
-- Source skills are authored once under `skills/`; `sync.sh` may rewrite copies for non-OpenCode targets during installation
-- Skills that write project artifacts should use source `.opencode/...` paths; `sync.sh` rewrites them for `ghc` and `cc` targets during install
+- Skills use the open Agent Skills format and are installed with the Skills CLI
+- Source skills are authored once under `skills/`
+- Skills that write project artifacts should use `.opencode/...` paths
 - Agents target the OpenCode agent runtime and its tool set (Bash, Read, Write, Edit, Glob, Grep, etc.)
 - Some GitHub-focused skills may combine official API flows with clearly labeled best-effort prompt/comment flows when GitHub features are partially exposed through `gh`
 - Never commit directly on `main` or `master`; create or switch to a feature branch first
@@ -117,31 +114,29 @@ Each agent is a **single `.md` file** in the `agents/` directory. The filename (
 - `mir-skills-install` checks for `npx` and installs all repository skills globally without interactive prompts, targeting `codex`, `claude-code`, `github-copilot`, and `opencode` explicitly.
 - `mir-skills-update` checks for `npx` and runs the README command `npx skills@latest update -g` to update globally installed skills, reporting the result or command error.
 
-## sync.sh
+## Skill Installation
 
-The sync script installs skills and agents from this repo to supported target CLIs. It:
-- Defaults to the `oc` target when no CLI argument is provided
-- Accepts `oc`, `ghc`, and `cc` as target arguments, plus `--sync-all` to sync all supported targets
-- Syncs skills (directories) to `~/.config/opencode/skills/` for `oc` using `rsync`
-- Syncs skills (directories) to `~/.copilot/skills/` for `ghc` using `rsync`
-- Syncs skills (directories) to `~/.claude/skills/` for `cc` using `rsync`
-- Uses `python3` to prepare non-OpenCode skill copies for `ghc` and `cc`
-- Rewrites skill-instruction workspace paths from `.opencode/` to `.copilot/` during `ghc` sync
-- Rewrites skill-instruction workspace paths from `.opencode/` to `.claude/` during `cc` sync
-- Syncs agents (flat `.md` files) to `~/.config/opencode/agents/` for `oc` using `cp`
-- Creates target skills directories if they do not exist
-- Compares hashes (md5sum) to detect changes
-- Supports `--dry-run` for previewing changes
-- Reports installed/updated/up-to-date counts for synced skills and agents
-- Requires `rsync`, plus `python3` for non-OpenCode targets
-- Syncs all skill directories under `skills/` into `~/.config/opencode/skills/`
+Install skills globally using the Skills CLI, as documented in README.md:
+
+```bash
+npx skills add mir-am/skills-agents-ai-coding -g
+```
+
+Update installed skills:
+
+```bash
+npx skills@latest update -g
+```
+
+The `mir-skills-install` and `mir-skills-update` skills provide these workflows for agent sessions. OpenCode agent definitions remain under `agents/`; see the [OpenCode agents documentation](https://opencode.ai/docs/agents/) for agent setup.
 
 ## Adding a New Skill
 
 1. Create a new directory under `skills/` with the skill name
 2. Add a `SKILL.md` following the frontmatter + markdown body pattern above
 3. Update `README.md` to list the new skill under "Available Skills"
-4. Test by running `./sync.sh --dry-run`
+4. Validate YAML frontmatter, ensure the directory name matches the skill name, and check referenced resources. Exercise changed commands in an isolated workspace or with stubs as appropriate.
+5. Run `git diff --check` before committing.
 
 Release-oriented skills can compose with each other. For example, `changelog-bump-ver` prepares the latest versioned changelog entry, and `gh-release` publishes that entry as an annotated tag and GitHub prerelease.
 
@@ -151,7 +146,8 @@ Release-oriented skills can compose with each other. For example, `changelog-bum
 2. Add YAML frontmatter with `description`, `mode`, `model`, `tools`, etc.
 3. Write the agent instructions in the markdown body
 4. Update `README.md` to list the new agent under "Available Agents"
-5. Test by running `./sync.sh --dry-run`
+5. Validate YAML frontmatter and review the configured tools and workflow against the agent's intended task; use an isolated workspace for behavioral checks.
+6. Run `git diff --check` before committing.
 
 ## CI Skip Rules
 
@@ -159,7 +155,7 @@ The `git-commit` skill checks for `AGENTS.md` files in target projects for CI sk
 
 ## Keeping AGENTS.md Up-to-Date
 
-When you make significant structural changes to this project (e.g., adding/removing skills or agents, changing conventions, modifying `sync.sh` behavior, or altering the repo layout), update this file to reflect those changes. Future agents rely on AGENTS.md for accurate project context.
+When you make significant structural changes to this project (e.g., adding/removing skills or agents, changing conventions or installation workflows, or altering the repo layout), update this file to reflect those changes. Future agents rely on AGENTS.md for accurate project context.
 
 ## Documentation
 
