@@ -108,6 +108,7 @@ Each agent is a **single `.md` file** in the `agents/` directory. The filename (
 - Some GitHub-focused skills may combine official API flows with clearly labeled best-effort prompt/comment flows when GitHub features are partially exposed through `gh`
 - Never commit directly on `main` or `master`; create or switch to a feature branch first
 - Never push directly to `main` or `master`; changes must land through a pull request
+- `gh-issue-fix` carries an issue through planning, implementation, validation, commits, and a linked PR without routine approval pauses, unless the user requests a narrower scope. Use a dedicated issue branch, target the detected default branch, and include a closing issue reference; merging remains a separate action, and tool permissions and branch protections still apply.
 
 ## sync.sh
 

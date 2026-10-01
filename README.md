@@ -31,7 +31,7 @@ Skills are grouped by workflow to make related capabilities easier to discover.
 | Skill | What it does | Requirements |
 | --- | --- | --- |
 | `gh-issue` | Create a GitHub issue for a bug or feature idea found during an agent session. | `git`, GitHub CLI (`gh`) |
-| `gh-issue-fix` | Pick up a GitHub issue and implement a fix or feature with a user-approved plan. Fetch issue details, explore the codebase, generate an implementation plan, create a feature branch, and implement changes. | `git`, GitHub CLI (`gh`) |
+| `gh-issue-fix` | Take a GitHub issue through planning, implementation, testing, commits, and a linked PR without routine approval pauses; the issue closes when the PR is merged. | `git`, GitHub CLI (`gh`) |
 | `gh-pr` | Create GitHub pull requests with a smart title and description from branch commits, self-assign them to the authenticated `gh` user, and commit/push any synced `CHANGELOG.md` entry back to the same PR branch. | `git`, GitHub CLI (`gh`) |
 | `gh-protect-default-branch` | Protect the default branch from direct pushes so changes land only via pull requests. | GitHub CLI (`gh`), repository admin permissions |
 
