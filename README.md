@@ -2,15 +2,17 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-Reusable skills and agents for AI coding assistants.
+Reusable skills for AI coding assistants like Claude Code, Codex, GitHub Copilot, Cursor, and OpenCode, plus OpenCode-specific agents.
 
-This repository stores skills in the open Agent Skills format and supports syncing them to multiple CLI-based AI coding assistants:
+## Install
 
-- OpenCode (`oc`)
-- GitHub Copilot CLI (`ghc`)
-- Claude Code (`cc`)
+Install skills globally:
 
-It also includes OpenCode-specific agents in `agents/`.
+```bash
+npx skills add mir-am/skills-agents-ai-coding -g
+```
+
+For more installation options, see the [Skills CLI docs](https://github.com/vercel-labs/skills#readme).
 
 ## Available Skills 🧠
 
@@ -67,16 +69,6 @@ Skills are grouped by workflow to make related capabilities easier to discover.
 Reviews feature branch diffs for quality, bugs, performance, and security. Writes a structured review to `.opencode/review/`.
 
 **Requirements:** git
-
-## Install
-
-Install skills globally:
-
-```bash
-npx skills add mir-am/skills-agents-ai-coding -g
-```
-
-For more installation options, see the [Skills CLI docs](https://github.com/vercel-labs/skills#readme).
 
 ## Documentation
 
