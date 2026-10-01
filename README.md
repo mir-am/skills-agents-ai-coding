@@ -24,7 +24,6 @@ Skills are grouped by workflow to make related capabilities easier to discover.
 | --- | --- | --- |
 | `git-branch` | Create a descriptive feature branch from the repo default branch using session context and current staged/unstaged changes. | `git` |
 | `git-commit` | Smart git commit with branch protection, session-aware staging, and conventional commits. | `git` |
-| `git-pr` | Create GitHub pull requests with a smart title and description from branch commits, self-assign them to the authenticated `gh` user, and commit/push any synced `CHANGELOG.md` entry back to the same PR branch. | `git`, GitHub CLI (`gh`) |
 | `git-push` | Push commits to the feature branch, update the open PR description with new changes, and commit/push any synced `CHANGELOG.md` update to the same branch. | `git`, GitHub CLI (`gh`) |
 
 ### GitHub Workflow
@@ -33,6 +32,7 @@ Skills are grouped by workflow to make related capabilities easier to discover.
 | --- | --- | --- |
 | `gh-issue` | Create a GitHub issue for a bug or feature idea found during an agent session. | `git`, GitHub CLI (`gh`) |
 | `gh-issue-fix` | Pick up a GitHub issue and implement a fix or feature with a user-approved plan. Fetch issue details, explore the codebase, generate an implementation plan, create a feature branch, and implement changes. | `git`, GitHub CLI (`gh`) |
+| `gh-pr` | Create GitHub pull requests with a smart title and description from branch commits, self-assign them to the authenticated `gh` user, and commit/push any synced `CHANGELOG.md` entry back to the same PR branch. | `git`, GitHub CLI (`gh`) |
 | `gh-protect-default-branch` | Protect the default branch from direct pushes so changes land only via pull requests. | GitHub CLI (`gh`), repository admin permissions |
 
 ### Code Review

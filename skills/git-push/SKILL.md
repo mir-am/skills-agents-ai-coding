@@ -116,7 +116,7 @@ Only reach this step if the new commits are significant (see above).
    gh pr view <number> --json body --jq .body
    ```
 2. Analyze the new commits and session context
-3. Generate new bullet points for the `## Changes` section (same style as `git-pr` skill)
+3. Generate new bullet points for the `## Changes` section (same style as `gh-pr` skill)
 4. Append the new bullet points to the existing `## Changes` section
 5. Keep the `## Summary` section unchanged unless it no longer reflects the PR accurately — if so, update it
 6. Write the updated body back:
@@ -126,7 +126,7 @@ Only reach this step if the new commits are significant (see above).
 
 ### Updated Description Format
 
-Preserve the existing structure from the `git-pr` skill:
+Preserve the existing structure from the `gh-pr` skill:
 
 ```markdown
 ## Summary
@@ -166,7 +166,7 @@ Rules:
 
 - Do not touch `CHANGELOG.md` if there is no open PR in the current agent context or no open PR for the branch
 - Do not create a new changelog bullet from `git-push`; this skill only updates an existing PR-linked bullet
-- Reuse the same high-level classification rules as `git-pr`: `Added`, `Changed`, `Deprecated`, `Removed`, `Fixed`, `Security`, then `Misc` if none fit well
+- Reuse the same high-level classification rules as `gh-pr`: `Added`, `Changed`, `Deprecated`, `Removed`, `Fixed`, `Security`, then `Misc` if none fit well
 - Only move the bullet if the newly selected subsection already exists under `## [Unreleased]`; otherwise skip changelog editing
 - Keep the changelog entry in this format:
   ```markdown

@@ -1,12 +1,12 @@
 ---
-name: git-pr
+name: gh-pr
 description: Create GitHub pull requests with smart title and description from branch commits
 license: MIT
 compatibility: opencode
 metadata:
   audience: developers
-  workflow: git
-  category: git-workflow
+  workflow: github
+  category: github-workflow
 ---
 
 ## What I do
@@ -21,7 +21,7 @@ metadata:
 
 ## When to use me
 
-Use this skill when the user asks to create a pull request from the current feature branch.
+Use this skill when the user asks to create a GitHub pull request from the current feature branch.
 
 ## Prerequisites
 
