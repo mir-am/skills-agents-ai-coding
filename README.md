@@ -2,15 +2,17 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-Reusable skills and agents for AI coding assistants.
+Reusable skills for AI coding assistants like Claude Code, Codex, GitHub Copilot, Cursor, and OpenCode, plus OpenCode-specific agents.
 
-This repository stores skills in the open Agent Skills format and supports syncing them to multiple CLI-based AI coding assistants:
+## Install
 
-- OpenCode (`oc`)
-- GitHub Copilot CLI (`ghc`)
-- Claude Code (`cc`)
+Install skills globally:
 
-It also includes OpenCode-specific agents in `agents/`.
+```bash
+npx skills add mir-am/skills-agents-ai-coding -g
+```
+
+For more installation options, see the [Skills CLI docs](https://github.com/vercel-labs/skills#readme).
 
 ## Available Skills 🧠
 
@@ -67,49 +69,6 @@ Skills are grouped by workflow to make related capabilities easier to discover.
 Reviews feature branch diffs for quality, bugs, performance, and security. Writes a structured review to `.opencode/review/`.
 
 **Requirements:** git
-
-## Requirements
-
-- rsync (for sync script)
-- python3 (required when syncing non-OpenCode targets: `ghc` and `cc`)
-- PowerShell 7 (for the Windows sync script)
-
-## Usage
-
-Sync to the default OpenCode target:
-
-```bash
-./sync.sh
-./sync.sh ghc --dry-run
-```
-
-Windows PowerShell:
-
-```powershell
-./sync.ps1
-./sync.ps1 ghc --dry-run
-```
-
-Common options:
-
-- `oc`, `ghc`, `cc` choose a target
-- `--dry-run` preview changes without applying them
-- `--sync-all` sync all supported targets
-
-## Sync Targets
-
-- OpenCode (`oc`)
-  - Skills: `~/.config/opencode/skills`
-  - Skill workspace paths stay as `.opencode/...`
-  - Agents: `~/.config/opencode/agents`
-- GitHub Copilot CLI (`ghc`)
-  - Skills: `~/.copilot/skills`
-  - Skill workspace paths are rewritten to `.copilot/...` during sync
-  - Agents: not synced by this script
-- Claude Code (`cc`)
-  - Skills: `~/.claude/skills`
-  - Skill workspace paths are rewritten to `.claude/...` during sync
-  - Agents: not synced by this script
 
 ## Documentation
 
