@@ -12,6 +12,15 @@ Install skills globally:
 npx skills add mir-am/skills-agents-ai-coding -g
 ```
 
+<details>
+<summary>Update installed skills</summary>
+
+```bash
+npx skills@latest update -g
+```
+
+</details>
+
 For more installation options, see the [Skills CLI docs](https://github.com/vercel-labs/skills#readme).
 
 ## Available Skills 🧠
