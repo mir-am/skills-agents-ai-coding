@@ -2,7 +2,6 @@
 name: session-note
 description: Capture current work session into a markdown note for continuity
 license: MIT
-compatibility: opencode
 metadata:
   audience: developers
   workflow: productivity

@@ -2,7 +2,6 @@
 name: save-plan
 description: Save or update the agent's current plan to .opencode/plans/ in the working project
 license: MIT
-compatibility: opencode
 metadata:
   audience: developers
   workflow: productivity

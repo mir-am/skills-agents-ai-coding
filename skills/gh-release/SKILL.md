@@ -2,7 +2,6 @@
 name: gh-release
 description: Create an annotated git tag and GitHub prerelease from the latest versioned CHANGELOG entry
 license: MIT
-compatibility: opencode
 metadata:
   audience: developers
   workflow: release

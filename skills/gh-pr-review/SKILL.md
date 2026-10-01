@@ -2,7 +2,6 @@
 name: gh-pr-review
 description: Review a GitHub Pull Request using gh CLI and provide structured feedback
 license: MIT
-compatibility: opencode
 metadata:
   audience: developers
   workflow: code-review

@@ -2,7 +2,6 @@
 name: make-changelog
 description: Create initial CHANGELOG.md with unreleased features using Keep a Changelog format
 license: MIT
-compatibility: opencode
 metadata:
   audience: developers
   workflow: git

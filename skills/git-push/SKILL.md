@@ -2,7 +2,6 @@
 name: git-push
 description: Push commits to feature branch and update open PR description with new changes
 license: MIT
-compatibility: opencode
 metadata:
   audience: developers
   workflow: git

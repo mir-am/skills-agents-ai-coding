@@ -2,7 +2,6 @@
 name: gh-issue-fix
 description: Implement a GitHub issue end to end through testing, commits, and a linked pull request without routine approval pauses
 license: MIT
-compatibility: opencode
 metadata:
   audience: developers
   workflow: github

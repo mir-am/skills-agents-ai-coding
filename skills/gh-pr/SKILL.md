@@ -2,7 +2,6 @@
 name: gh-pr
 description: Create GitHub pull requests with smart title and description from branch commits
 license: MIT
-compatibility: opencode
 metadata:
   audience: developers
   workflow: github

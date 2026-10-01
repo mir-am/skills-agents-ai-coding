@@ -2,7 +2,6 @@
 name: gh-copilot-review-read
 description: Read GitHub Copilot PR review comments, pair them with diff context, and write a markdown digest to .opencode/review/
 license: MIT
-compatibility: opencode
 metadata:
   audience: developers
   workflow: github

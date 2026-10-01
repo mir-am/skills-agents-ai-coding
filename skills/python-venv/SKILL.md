@@ -2,7 +2,6 @@
 name: python-venv
 description: Create or reuse a project-local Python virtual environment and ensure .venv is excluded by the repository's .gitignore
 license: MIT
-compatibility: opencode
 metadata:
   audience: developers
   workflow: python

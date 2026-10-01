@@ -126,7 +126,7 @@ function Strip-TargetFrontmatter {
       $skipMetadata = $false
     }
 
-    if ($stripped.StartsWith('license:') -or $stripped.StartsWith('compatibility:')) {
+    if ($stripped.StartsWith('license:')) {
       continue
     }
 

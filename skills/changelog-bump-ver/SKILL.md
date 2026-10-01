@@ -2,7 +2,6 @@
 name: changelog-bump-ver
 description: Promote CHANGELOG.md unreleased entries into the next release version and update Maven POMs to the next snapshot version
 license: MIT
-compatibility: opencode
 metadata:
   audience: developers
   workflow: release

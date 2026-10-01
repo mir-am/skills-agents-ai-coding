@@ -2,7 +2,6 @@
 name: gh-copilot-review
 description: Request a GitHub Copilot review for a pull request via gh CLI
 license: MIT
-compatibility: opencode
 metadata:
   audience: developers
   workflow: github

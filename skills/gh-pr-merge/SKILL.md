@@ -2,7 +2,6 @@
 name: gh-pr-merge
 description: Squash-merge a GitHub pull request using gh CLI when the user requests merging, and verify the result
 license: MIT
-compatibility: opencode
 metadata:
   audience: developers
   workflow: github

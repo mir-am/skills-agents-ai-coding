@@ -49,7 +49,6 @@ Each skill is a **directory** under `skills/` containing a `SKILL.md` file.
    name: <skill-name>
    description: <one-line description>
    license: MIT
-   compatibility: opencode
    metadata:
      audience: developers
      workflow: <category>
