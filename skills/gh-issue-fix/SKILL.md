@@ -19,7 +19,7 @@ metadata:
 - Create a new branch (if on `main`/`master`) after plan approval
 - Implement the fix or feature following the approved plan
 - Run relevant tests and summarize changes
-- Optionally hand off to `git-commit` and `git-pr` skills
+- Optionally hand off to `git-commit` and `gh-pr` skills
 
 ## When to use me
 
@@ -154,7 +154,7 @@ Execute the approved plan step by step:
 2. Offer next steps:
    > "Changes are ready. Would you like me to:
    > - Commit using the `git-commit` skill?
-   > - Open a pull request using the `git-pr` skill?
+   > - Open a pull request using the `gh-pr` skill?
    > - Both?"
 
 3. Invoke the appropriate skills based on the user's response.

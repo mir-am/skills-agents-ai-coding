@@ -20,11 +20,11 @@ opencode-skills/
     gh-cr-submit/
     gh-issue/
     gh-issue-fix/
+    gh-pr/
     gh-pr-review/
     gh-release/
     git-branch/
     git-commit/
-    git-pr/
     git-push/
     make-changelog/
     save-plan/
