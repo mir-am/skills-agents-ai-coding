@@ -93,7 +93,7 @@ Accept either of these forms:
    - Use the structured comment fields such as `path`, `line`, `start_line`, `side`, `start_side`, and `subject_type`
    - Do not claim this exact header came from a single API field; it is composed from the metadata
    - Render a GitHub-style location header such as:
-     - `sync.sh`
+     - `README.md`
      - `Comment on lines +42 to +50`
    - For single-line comments, render a concise variant such as:
      - `Comment on line +141`
@@ -176,7 +176,7 @@ Comment on lines +42 to +50
 
 ## Suggested Title and Filename Style
 
-- Document title: `Copilot Review Digest: PR #123 Improve sync reporting`
+- Document title: `Copilot Review Digest: PR #123 Improve review reporting`
 - Filename: `2026-03-06-1530-pr-123-copilot-review-digest.md`
 
 ## Data Sources
