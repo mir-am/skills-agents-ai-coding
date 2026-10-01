@@ -28,6 +28,7 @@ opencode-skills/
     git-commit/
     git-push/
     make-changelog/
+    mir-skills-install/
     python-venv/
     save-plan/
     work-report/
@@ -111,6 +112,7 @@ Each agent is a **single `.md` file** in the `agents/` directory. The filename (
 - Never push directly to `main` or `master`; changes must land through a pull request
 - `gh-issue-fix` carries an issue through planning, implementation, validation, commits, and a linked PR without routine approval pauses, unless the user requests a narrower scope. Use a dedicated issue branch, target the detected default branch, and include a closing issue reference; merging remains a separate action, and tool permissions and branch protections still apply.
 - `python-venv` creates or reuses a project-root `.venv` and verifies exclusion by the root `.gitignore`. Preserve invalid existing environments and ignore-file content; repeated runs must reuse the environment and avoid duplicate ignore rules.
+- `mir-skills-install` checks for `npx` and installs all repository skills globally without interactive prompts, targeting `codex`, `claude-code`, `github-copilot`, and `opencode` explicitly.
 
 ## sync.sh
 

@@ -67,6 +67,7 @@ Skills are grouped by workflow to make related capabilities easier to discover.
 
 | Skill | What it does | Requirements |
 | --- | --- | --- |
+| `mir-skills-install` | Install all repository skills globally for Codex, Claude Code, GitHub Copilot, and OpenCode without interactive prompts. | Node.js and npm (`npx`) |
 | `python-venv` | Create or reuse a project-root `.venv`, preserve invalid existing paths, and ensure the root `.gitignore` excludes the environment without duplicate rules on repeated runs. | Python 3 with `venv`, `git`, Bash/POSIX environment |
 
 ### Planning & Notes
