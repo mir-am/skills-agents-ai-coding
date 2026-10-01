@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# TODO: Deprecated; remove this script in a future cleanup.
+# Install skills with: npx skills add mir-am/skills-agents-ai-coding -g
+
 # Exit on any error
 set -e
 
