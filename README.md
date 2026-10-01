@@ -42,7 +42,7 @@ Skills are grouped by workflow to make related capabilities easier to discover.
 | `gh-issue` | Create a GitHub issue for a bug or feature idea found during an agent session. | `git`, GitHub CLI (`gh`) |
 | `gh-issue-fix` | Take a GitHub issue through planning, implementation, testing, commits, and a linked PR without routine approval pauses; the issue closes when the PR is merged. | `git`, GitHub CLI (`gh`) |
 | `gh-pr` | Create GitHub pull requests with a smart title and description from branch commits, self-assign them to the authenticated `gh` user, and commit/push any synced `CHANGELOG.md` entry back to the same PR branch. | `git`, GitHub CLI (`gh`) |
-| `gh-pr-merge` | Squash-merge a GitHub PR after checking merge requirements, verify the result, and delete the branch only when requested. | GitHub CLI (`gh`) |
+| `gh-pr-merge` | Squash-merge a GitHub PR after checking merge requirements, verify the result, and delete its source branch on GitHub unless retention is requested, preserving local branches and work. | GitHub CLI (`gh`) |
 | `gh-protect-default-branch` | Protect the default branch from direct pushes so changes land only via pull requests. | GitHub CLI (`gh`), repository admin permissions |
 
 ### Code Review

@@ -111,6 +111,7 @@ Each agent is a **single `.md` file** in the `agents/` directory. The filename (
 - Never commit directly on `main` or `master`; create or switch to a feature branch first
 - Never push directly to `main` or `master`; changes must land through a pull request
 - `gh-issue-fix` carries an issue through planning, implementation, validation, commits, and a linked PR without routine approval pauses, unless the user requests a narrower scope. Use a dedicated issue branch, target the detected default branch, and include a closing issue reference; merging remains a separate action, and tool permissions and branch protections still apply.
+- `gh-pr-merge` deletes the remote source branch after verifying a successful merge unless the user requests retaining it. Preserve local branches and uncommitted work, use the source repository for fork PRs, and report merge and cleanup results separately.
 - `python-venv` creates or reuses a project-root `.venv` and verifies exclusion by the root `.gitignore`. Preserve invalid existing environments and ignore-file content; repeated runs must reuse the environment and avoid duplicate ignore rules.
 - `mir-skills-install` checks for `npx` and installs all repository skills globally without interactive prompts, targeting `codex`, `claude-code`, `github-copilot`, and `opencode` explicitly.
 
