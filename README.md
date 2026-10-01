@@ -63,6 +63,12 @@ Skills are grouped by workflow to make related capabilities easier to discover.
 | `make-changelog` | Create an initial `CHANGELOG.md` with unreleased entries using Keep a Changelog format plus a `Misc` section for notable code changes that do not fit the standard sections. | `git` |
 | `gh-release` | Create an annotated git tag and GitHub prerelease from the latest versioned `CHANGELOG.md` entry, preserve the repo's `Misc` subsection when present, and append a full changelog compare link. | `git`, GitHub CLI (`gh`) |
 
+### Project Setup
+
+| Skill | What it does | Requirements |
+| --- | --- | --- |
+| `python-venv` | Create or reuse a project-root `.venv`, preserve invalid existing paths, and ensure the root `.gitignore` excludes the environment without duplicate rules on repeated runs. | Python 3 with `venv`, `git`, Bash/POSIX environment |
+
 ### Planning & Notes
 
 | Skill | What it does | Requirements |
