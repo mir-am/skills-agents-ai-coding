@@ -68,48 +68,15 @@ Reviews feature branch diffs for quality, bugs, performance, and security. Write
 
 **Requirements:** git
 
-## Requirements
+## Install
 
-- rsync (for sync script)
-- python3 (required when syncing non-OpenCode targets: `ghc` and `cc`)
-- PowerShell 7 (for the Windows sync script)
-
-## Usage
-
-Sync to the default OpenCode target:
+Install skills globally:
 
 ```bash
-./sync.sh
-./sync.sh ghc --dry-run
+npx skills add mir-am/skills-agents-ai-coding -g
 ```
 
-Windows PowerShell:
-
-```powershell
-./sync.ps1
-./sync.ps1 ghc --dry-run
-```
-
-Common options:
-
-- `oc`, `ghc`, `cc` choose a target
-- `--dry-run` preview changes without applying them
-- `--sync-all` sync all supported targets
-
-## Sync Targets
-
-- OpenCode (`oc`)
-  - Skills: `~/.config/opencode/skills`
-  - Skill workspace paths stay as `.opencode/...`
-  - Agents: `~/.config/opencode/agents`
-- GitHub Copilot CLI (`ghc`)
-  - Skills: `~/.copilot/skills`
-  - Skill workspace paths are rewritten to `.copilot/...` during sync
-  - Agents: not synced by this script
-- Claude Code (`cc`)
-  - Skills: `~/.claude/skills`
-  - Skill workspace paths are rewritten to `.claude/...` during sync
-  - Agents: not synced by this script
+For more installation options, see the [Skills CLI docs](https://github.com/vercel-labs/skills#readme).
 
 ## Documentation
 
